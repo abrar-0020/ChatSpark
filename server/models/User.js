@@ -77,7 +77,15 @@ class User {
   }
 
   async comparePassword(candidatePassword) {
-    return await bcrypt.compare(candidatePassword, this.password);
+    if (!candidatePassword || !this.password) {
+      return false;
+    }
+    try {
+      return await bcrypt.compare(candidatePassword, this.password);
+    } catch (error) {
+      console.error('Password comparison error:', error);
+      return false;
+    }
   }
 
   toJSON() {
