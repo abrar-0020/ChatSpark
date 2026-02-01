@@ -4,12 +4,14 @@
   <img src="client/public/chatspark.svg" alt="ChatSpark Logo" width="120" height="120" />
   
   <h3>Real-time Chat Application</h3>
-  <p>A modern, feature-rich chat platform inspired by Discord, built with React, Node.js, Socket.IO, and in-memory storage.</p>
+  <p>A modern, feature-rich chat platform inspired by Discord, built with React, Node.js, Socket.IO, and local file storage.</p>
 
   ![React](https://img.shields.io/badge/React-18-61DAFB?style=for-the-badge&logo=react&logoColor=white)
   ![Node.js](https://img.shields.io/badge/Node.js-18+-339933?style=for-the-badge&logo=node.js&logoColor=white)
   ![Socket.IO](https://img.shields.io/badge/Socket.IO-4.x-010101?style=for-the-badge&logo=socket.io&logoColor=white)
   ![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
+  
+  [🌐 Live Demo](https://abrar-0020.github.io/ChatSpark/) | [📝 Report Bug](https://github.com/abrar-0020/ChatSpark/issues)
 </div>
 
 ---
@@ -46,15 +48,16 @@
 - Discord-like message UI with avatars
 
 ### 🎨 Modern UI/UX
-- Beautiful dark theme design inspired by Discord
+- Beautiful warm orange/amber theme with dark mode
 - 3-column layout: Server List → Channel List → Chat Area + Member List
 - Responsive and accessible interface
-- Emoji picker support
+- Emoji, GIF, and sticker picker support
 - Member list with online/offline status
-- User profile modal
-- Server invite modal
+- User profile modal (click on any username/avatar)
+- Server invite modal with invite codes
 - Animated loading states
 - Discord-style avatars with status indicators
+- Always-visible message avatars (no compact mode)
 
 ---
 
@@ -81,7 +84,7 @@
 | Socket.IO | WebSocket Server |
 | JWT | Authentication |
 | bcryptjs | Password Hashing |
-| **In-Memory Storage** | Data Storage (No MongoDB required) |
+| **Local File Storage** | Persistent JSON-based storage (No MongoDB required) |
 
 ---
 
@@ -90,7 +93,7 @@
 ### Prerequisites
 - Node.js 18+ installed
 - Git
-- **No database setup required!** (Uses in-memory storage)
+- **No database setup required!** (Uses local file storage)
 
 ### Installation
 
@@ -154,8 +157,8 @@
 
 ### ⚠️ Important Notes
 - **Use incognito/private windows** for testing multiple users (each browser window = different user)
-- **Data is temporary** - all data clears when the server restarts
-- **Refresh browser** (Ctrl+Shift+R) after server restarts
+- **Data is persistent** - all data is saved to local JSON files in `server/storage/data/`
+- **Data persists across server restarts** - no need to recreate accounts
 - **Server owners cannot leave** their own servers (they must delete them)
 
 ---
@@ -262,25 +265,35 @@ ChatSpark/
 
 ## 💾 Data Storage
 
-This application uses **in-memory storage** instead of MongoDB, which means:
+This application uses **local file-based storage** instead of MongoDB, which means:
 
 ### ✅ Advantages
 - **No database setup required** - works out of the box
-- **Fast performance** - all data is in RAM
+- **Persistent storage** - data survives server restarts
+- **Fast performance** - JSON files stored locally
 - **Easy development** - no connection strings or configurations
 - **Zero dependencies** - no external database needed
+- **Easy backup** - just copy the `server/storage/data/` folder
+
+### 📁 Storage Location
+- All data is stored in: `server/storage/data/`
+- Files created:
+  - `users.json` - User accounts and profiles
+  - `servers.json` - Server data
+  - `channels.json` - Channel information
+  - `messages.json` - Chat messages
 
 ### ⚠️ Limitations
-- **Data is not persistent** - all data is lost when server restarts
-- **Not suitable for production** - use only for development/testing
-- **Limited scalability** - data stored in single server instance
+- **Not suitable for production** - use database for production deployments
+- **Limited scalability** - single-server only, no clustering
+- **No transactions** - concurrent writes may conflict
 
-### 🔄 Migrating to MongoDB (Optional)
-If you want to use MongoDB instead:
-1. Uncomment MongoDB models in `server/models/`
-2. Install mongoose: `npm install mongoose`
-3. Create `.env` file with `MONGODB_URI`
-4. Replace in-memory storage with Mongoose schemas
+### 🔄 Migrating to MongoDB (Future)
+For production deployment, consider:
+1. Install mongoose: `npm install mongoose`
+2. Create MongoDB Atlas account or local MongoDB instance
+3. Update models to use Mongoose schemas
+4. Replace FileStorage with MongoDB operations
 
 ---
 
@@ -322,11 +335,14 @@ ChatSpark/
 │   │   ├── channelController.js
 │   │   └── messageController.js
 │   ├── middleware/        # auth.js (JWT verification)
-│   ├── models/            # In-memory data models
+│   ├── models/            # Data models with FileStorage
 │   │   ├── User.js
 │   │   ├── Server.js
 │   │   ├── Channel.js
 │   │   └── Message.js
+│   ├── storage/           # Local file storage system
+│   │   ├── fileStorage.js # FileStorage class
+│   │   └── data/          # JSON data files (gitignored)
 │   ├── routes/            # Express routes
 │   ├── socket/            # Socket.IO event handlers
 │   ├── index.js           # Server entry point
@@ -376,15 +392,16 @@ This project is open source and available under the [MIT License](LICENSE).
 Potential features to add:
 - [ ] Voice channels
 - [ ] File sharing and image uploads
-- [ ] Message reactions
-- [ ] User mentions and notifications
+- [ ] Message reactions and emoji reactions
+- [ ] User mentions (@username) and notifications
 - [ ] Direct messages (DMs)
 - [ ] Server categories
 - [ ] User roles and permissions
 - [ ] Message editing (UI ready, backend needs implementation)
-- [ ] Persistent storage with MongoDB
+- [ ] Deploy backend (Render.com / Railway.app)
+- [ ] MongoDB for production scaling
 - [ ] Mobile responsive design improvements
-- [ ] Dark/Light theme toggle
+- [ ] Message search functionality
 
 ---
 
