@@ -38,3 +38,6 @@ coverage/
 
 # TypeScript
 *.tsbuildinfo
+
+# Local data storage
+server/storage/data/

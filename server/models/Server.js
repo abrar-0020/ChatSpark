@@ -1,6 +1,13 @@
-// In-memory storage
-const servers = [];
-let serverIdCounter = 1;
+const FileStorage = require('../storage/fileStorage');
+
+// File-based storage (persists on local disk)
+const storage = new FileStorage('servers');
+const servers = storage.getAll();
+
+// Find highest ID to continue counter
+let serverIdCounter = servers.length > 0 
+  ? Math.max(...servers.map(s => parseInt(s._id) || 0)) + 1 
+  : 1;
 
 // Helper to generate invite code
 function generateInviteCode() {
@@ -41,6 +48,9 @@ class Server {
       servers.push(this);
     }
 
+    // Save to disk
+    storage.save(servers);
+
     return this;
   }
 
@@ -73,6 +83,8 @@ class Server {
     if (index >= 0) {
       const deleted = servers[index];
       servers.splice(index, 1);
+      // Save to disk
+      storage.save(servers);
       return new Server(deleted);
     }
     return null;

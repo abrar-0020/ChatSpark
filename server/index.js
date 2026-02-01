@@ -73,13 +73,14 @@ app.use((req, res) => {
 // Initialize Socket.IO
 initializeSocket(io);
 
-// Start server (no MongoDB connection needed - using in-memory storage)
+// Start server
 const PORT = process.env.PORT || 5000;
 
-console.log('Using in-memory storage (data will not persist after restart)');
+console.log('💾 Using local file storage - data persists on your PC');
+console.log('📁 Data location: server/storage/data/');
 server.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-  console.log(`WebSocket server ready`);
+  console.log(`🚀 Server running on port ${PORT}`);
+  console.log(`🔌 WebSocket server ready`);
 });
 
 // Graceful shutdown

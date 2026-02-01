@@ -12,6 +12,8 @@ interface MessageInputProps {
 const MessageInput = ({ channelId, channelName }: MessageInputProps) => {
   const [message, setMessage] = useState('');
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [showGifPicker, setShowGifPicker] = useState(false);
+  const [showStickerPicker, setShowStickerPicker] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const { sendMessage, startTyping, stopTyping } = useMessageStore();
 
@@ -63,6 +65,18 @@ const MessageInput = ({ channelId, channelName }: MessageInputProps) => {
     textareaRef.current?.focus();
   };
 
+  const sendGif = (gifText: string) => {
+    sendMessage(channelId, gifText);
+    setShowGifPicker(false);
+    stopTypingIndicator();
+  };
+
+  const sendSticker = (stickerText: string) => {
+    sendMessage(channelId, stickerText);
+    setShowStickerPicker(false);
+    stopTypingIndicator();
+  };
+
   return (
     <div className="px-4 pb-6 relative">
       <div className="bg-neutral-800 rounded-lg flex items-end">
@@ -85,16 +99,83 @@ const MessageInput = ({ channelId, channelName }: MessageInputProps) => {
 
         {/* Action Buttons */}
         <div className="flex items-center gap-1 p-2">
-          <button className="p-1.5 text-neutral-400 hover:text-white transition-colors">
-            <Gift size={22} />
-          </button>
-          <button className="p-1.5 text-neutral-400 hover:text-white transition-colors">
-            <Sticker size={22} />
-          </button>
+          <div className="relative">
+            <button 
+              onClick={() => {
+                setShowGifPicker(!showGifPicker);
+                setShowStickerPicker(false);
+                setShowEmojiPicker(false);
+              }}
+              className="p-1.5 text-neutral-400 hover:text-white transition-colors"
+              title="Send a GIF"
+            >
+              <Gift size={22} />
+            </button>
+            
+            {showGifPicker && (
+              <div className="absolute bottom-full right-0 mb-2 bg-neutral-900 border border-neutral-800 rounded-lg p-4 w-72 shadow-xl">
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="text-white font-semibold">Popular GIFs</h3>
+                  <button onClick={() => setShowGifPicker(false)} className="text-neutral-400 hover:text-white">×</button>
+                </div>
+                <div className="grid grid-cols-2 gap-2 max-h-64 overflow-y-auto">
+                  {['🎉 Party!', '👍 Thumbs Up', '❤️ Love', '😂 LOL', '🔥 Fire', '⭐ Awesome'].map((gif) => (
+                    <button
+                      key={gif}
+                      onClick={() => sendGif(gif)}
+                      className="bg-neutral-800 hover:bg-neutral-700 p-3 rounded text-white text-sm transition-colors"
+                    >
+                      {gif}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+          
+          <div className="relative">
+            <button 
+              onClick={() => {
+                setShowStickerPicker(!showStickerPicker);
+                setShowGifPicker(false);
+                setShowEmojiPicker(false);
+              }}
+              className="p-1.5 text-neutral-400 hover:text-white transition-colors"
+              title="Send a sticker"
+            >
+              <Sticker size={22} />
+            </button>
+            
+            {showStickerPicker && (
+              <div className="absolute bottom-full right-0 mb-2 bg-neutral-900 border border-neutral-800 rounded-lg p-4 w-72 shadow-xl">
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="text-white font-semibold">Stickers</h3>
+                  <button onClick={() => setShowStickerPicker(false)} className="text-neutral-400 hover:text-white">×</button>
+                </div>
+                <div className="grid grid-cols-4 gap-2 max-h-64 overflow-y-auto">
+                  {['😀', '😂', '🥰', '😎', '🤔', '😴', '🎉', '❤️', '👍', '🔥', '⭐', '✨', '🚀', '💯', '👋', '🙌'].map((sticker) => (
+                    <button
+                      key={sticker}
+                      onClick={() => sendSticker(sticker)}
+                      className="bg-neutral-800 hover:bg-neutral-700 p-3 rounded text-3xl transition-colors hover:scale-110"
+                    >
+                      {sticker}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+          
           <div className="relative">
             <button
-              onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+              onClick={() => {
+                setShowEmojiPicker(!showEmojiPicker);
+                setShowGifPicker(false);
+                setShowStickerPicker(false);
+              }}
               className="p-1.5 text-neutral-400 hover:text-white transition-colors"
+              title="Add emoji"
             >
               <Smile size={22} />
             </button>

@@ -4,6 +4,7 @@ import { useMessageStore, useAuthStore } from '../../store';
 import { socketService } from '../../services';
 import { Trash2, MoreHorizontal, Smile } from 'lucide-react';
 import EmojiPicker from './EmojiPicker';
+import UserProfileModal from '../profile/UserProfileModal';
 
 interface MessageItemProps {
   message: Message;
@@ -14,6 +15,7 @@ interface MessageItemProps {
 const MessageItem = ({ message, showAvatar, isOwn }: MessageItemProps) => {
   const [showActions, setShowActions] = useState(false);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [showUserProfile, setShowUserProfile] = useState(false);
   const { deleteMessage } = useMessageStore();
   const { user } = useAuthStore();
 
@@ -96,7 +98,10 @@ const MessageItem = ({ message, showAvatar, isOwn }: MessageItemProps) => {
       >
         {/* Avatar */}
         <div className="flex-shrink-0">
-          <div className={`w-10 h-10 rounded-full ${avatarColor} flex items-center justify-center cursor-pointer hover:opacity-80 shadow-md`}>
+          <div 
+            className={`w-10 h-10 rounded-full ${avatarColor} flex items-center justify-center cursor-pointer hover:opacity-80 shadow-md`}
+            onClick={() => setShowUserProfile(true)}
+          >
             {authorAvatar ? (
               <img
                 src={authorAvatar}
@@ -114,7 +119,10 @@ const MessageItem = ({ message, showAvatar, isOwn }: MessageItemProps) => {
         {/* Content */}
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1">
-            <span className={`font-semibold ${isOwn ? 'text-primary' : 'text-white'} hover:underline cursor-pointer`}>
+            <span 
+              className={`font-semibold ${isOwn ? 'text-primary' : 'text-white'} hover:underline cursor-pointer`}
+              onClick={() => setShowUserProfile(true)}
+            >
               {authorName}
             </span>
             <span className="text-xs text-neutral-500">
@@ -163,6 +171,14 @@ const MessageItem = ({ message, showAvatar, isOwn }: MessageItemProps) => {
               onClose={() => setShowEmojiPicker(false)}
             />
           </div>
+        )}
+
+        {/* User Profile Modal */}
+        {showUserProfile && typeof message.author === 'object' && (
+          <UserProfileModal
+            user={message.author}
+            onClose={() => setShowUserProfile(false)}
+          />
         )}
       </div>
     );
@@ -220,6 +236,14 @@ const MessageItem = ({ message, showAvatar, isOwn }: MessageItemProps) => {
             <MoreHorizontal size={18} />
           </button>
         </div>
+      )}
+
+      {/* User Profile Modal */}
+      {showUserProfile && typeof message.author === 'object' && (
+        <UserProfileModal
+          user={message.author}
+          onClose={() => setShowUserProfile(false)}
+        />
       )}
     </div>
   );

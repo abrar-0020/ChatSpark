@@ -1,8 +1,14 @@
 const bcrypt = require('bcryptjs');
+const FileStorage = require('../storage/fileStorage');
 
-// In-memory storage
-const users = [];
-let userIdCounter = 1;
+// File-based storage (persists on local disk)
+const storage = new FileStorage('users');
+const users = storage.getAll();
+
+// Find highest ID to continue counter
+let userIdCounter = users.length > 0 
+  ? Math.max(...users.map(u => parseInt(u._id) || 0)) + 1 
+  : 1;
 
 class User {
   constructor(data) {
@@ -63,6 +69,9 @@ class User {
     } else {
       users.push(this);
     }
+
+    // Save to disk
+    storage.save(users);
 
     return this;
   }
@@ -125,6 +134,8 @@ class User {
             }
           }
         }
+    // Save to disk
+    storage.save(users);
         count++;
       }
     }

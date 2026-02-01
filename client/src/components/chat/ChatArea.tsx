@@ -392,16 +392,11 @@ const ChatArea = () => {
           ) : (
             <div className="px-4 pb-4">
               {channelMessages.map((message, index) => {
-                const prevMessage = index > 0 ? channelMessages[index - 1] : null;
-                const showAvatar = !prevMessage || 
-                  (prevMessage.author._id || prevMessage.author.id) !== (message.author._id || message.author.id) ||
-                  new Date(message.createdAt).getTime() - new Date(prevMessage.createdAt).getTime() > 420000; // 7 minutes
-
                 return (
                   <MessageItem
                     key={message._id}
                     message={message}
-                    showAvatar={showAvatar}
+                    showAvatar={true}
                     isOwn={(message.author._id || message.author.id) === (user?._id || user?.id)}
                   />
                 );

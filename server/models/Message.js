@@ -1,6 +1,13 @@
-// In-memory storage
-const messages = [];
-let messageIdCounter = 1;
+const FileStorage = require('../storage/fileStorage');
+
+// File-based storage (persists on local disk)
+const storage = new FileStorage('messages');
+const messages = storage.getAll();
+
+// Find highest ID to continue counter
+let messageIdCounter = messages.length > 0 
+  ? Math.max(...messages.map(m => parseInt(m._id) || 0)) + 1 
+  : 1;
 
 // Query builder class for method chaining
 class MessageQuery {
@@ -101,6 +108,9 @@ class Message {
       messages.push(this);
     }
 
+    // Save to disk
+    storage.save(messages);
+
     return this;
   }
 
@@ -143,6 +153,8 @@ class Message {
       }
       if (match) {
         toDelete.push(i);
+    // Save to disk
+    storage.save(messages);
       }
     }
     toDelete.forEach(i => messages.splice(i, 1));

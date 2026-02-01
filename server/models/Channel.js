@@ -1,6 +1,13 @@
-// In-memory storage
-const channels = [];
-let channelIdCounter = 1;
+const FileStorage = require('../storage/fileStorage');
+
+// File-based storage (persists on local disk)
+const storage = new FileStorage('channels');
+const channels = storage.getAll();
+
+// Find highest ID to continue counter
+let channelIdCounter = channels.length > 0 
+  ? Math.max(...channels.map(c => parseInt(c._id) || 0)) + 1 
+  : 1;
 
 class Channel {
   constructor(data) {
@@ -46,6 +53,9 @@ class Channel {
       channels.push(this);
     }
 
+    // Save to disk
+    storage.save(channels);
+
     return this;
   }
 
@@ -78,6 +88,8 @@ class Channel {
     if (index >= 0) {
       const deleted = channels[index];
       channels.splice(index, 1);
+      // Save to disk
+      storage.save(channels);
       return new Channel(deleted);
     }
     return null;
@@ -98,6 +110,8 @@ class Channel {
       }
     }
     toDelete.forEach(i => channels.splice(i, 1));
+    // Save to disk
+    storage.save(channels);
     return { deletedCount: toDelete.length };
   }
 

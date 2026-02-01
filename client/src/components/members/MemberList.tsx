@@ -1,9 +1,13 @@
+import { useState } from 'react';
 import { useServerStore, useAuthStore } from '../../store';
 import { Crown, Shield } from 'lucide-react';
+import UserProfileModal from '../profile/UserProfileModal';
+import { User } from '../../types';
 
 const MemberList = () => {
   const { activeServer } = useServerStore();
   const { user } = useAuthStore();
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
   if (!activeServer) {
     return null;
@@ -49,6 +53,7 @@ const MemberList = () => {
         className={`flex items-center gap-3 px-2 py-1.5 rounded mx-2 cursor-pointer
                    hover:bg-neutral-800 transition-colors
                    ${member.user.status === 'offline' ? 'opacity-50' : ''}`}
+        onClick={() => setSelectedUser(member.user)}
       >
         <div className="relative flex-shrink-0">
           <div className="w-8 h-8 rounded-full bg-neutral-800 flex items-center justify-center">
@@ -117,6 +122,14 @@ const MemberList = () => {
             ))}
           </div>
         </div>
+      )}
+
+      {/* User Profile Modal */}
+      {selectedUser && (
+        <UserProfileModal
+          user={selectedUser}
+          onClose={() => setSelectedUser(null)}
+        />
       )}
     </div>
   );
