@@ -7,44 +7,45 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Modern College Theme Colors
+        // Warm Modern Theme - Orange/Amber Accents
         primary: {
-          DEFAULT: '#0EA5E9', // Sky blue
-          hover: '#0284C7',
-          light: '#38BDF8',
-          dark: '#0369A1'
+          DEFAULT: '#FF6B35', // Vibrant Orange
+          hover: '#E85A2A',
+          light: '#FF8555',
+          dark: '#CC5528'
         },
         accent: {
-          DEFAULT: '#06B6D4', // Cyan
-          hover: '#0891B2',
-          light: '#22D3EE',
+          DEFAULT: '#FFB84D', // Golden Amber
+          hover: '#F0A838',
+          light: '#FFC873',
         },
-        success: '#10B981', // Green
-        warning: '#F59E0B', // Amber
-        danger: '#EF4444', // Red
-        info: '#3B82F6', // Blue
+        success: '#2ECC71', // Keep success green for clarity
+        warning: '#F39C12', // Amber warning
+        danger: '#E74C3C', // Red danger
+        info: '#FFB84D', // Amber instead of blue
         neutral: {
-          50: '#F8FAFC',
-          100: '#F1F5F9',
-          200: '#E2E8F0',
-          300: '#CBD5E1',
-          400: '#94A3B8',
-          500: '#64748B',
-          600: '#475569',
-          700: '#334155',
-          800: '#1E293B',
-          850: '#172033',
-          900: '#0F172A',
-          950: '#020617'
+          50: '#FAFAFA',
+          100: '#F5F5F5',
+          200: '#E5E5E5',
+          300: '#D4D4D4',
+          400: '#A3A3A3',
+          500: '#737373',
+          600: '#525252',
+          700: '#404040',
+          800: '#262626',
+          850: '#1C1C1C',
+          900: '#171717',
+          950: '#0F0F0F'
         }
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
       },
       boxShadow: {
-        'soft': '0 2px 8px rgba(0, 0, 0, 0.1)',
-        'medium': '0 4px 16px rgba(0, 0, 0, 0.15)',
-        'hard': '0 8px 32px rgba(0, 0, 0, 0.2)',
+        'soft': '0 2px 8px rgba(0, 0, 0, 0.15)',
+        'medium': '0 4px 16px rgba(0, 0, 0, 0.2)',
+        'hard': '0 8px 32px rgba(0, 0, 0, 0.25)',
+        'glow': '0 0 20px rgba(255, 107, 53, 0.3)',
       },
     },
   },
