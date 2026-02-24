@@ -1,12 +1,14 @@
 import { useState } from 'react';
 import { useServerStore, useAuthStore } from '../../store';
-import { Hash, Plus, Settings, ChevronDown, ChevronRight, UserPlus, Trash2, LogOut, Copy } from 'lucide-react';
+import { Hash, Plus, Settings, ChevronDown, ChevronRight, UserPlus, Trash2, LogOut, Copy, ArrowLeft } from 'lucide-react';
+import { useMobileNav } from '../../App';
 import CreateChannelModal from './CreateChannelModal';
 import InviteModal from '../server/InviteModal';
 
 const ChannelList = () => {
   const { activeServer, activeChannel, setActiveChannel, leaveServer, deleteServer } = useServerStore();
   const { user } = useAuthStore();
+  const { panel, setPanel } = useMobileNav();
   const [showChannelModal, setShowChannelModal] = useState(false);
   const [showInviteModal, setShowInviteModal] = useState(false);
   const [showServerMenu, setShowServerMenu] = useState(false);
@@ -14,8 +16,14 @@ const ChannelList = () => {
 
   if (!activeServer) {
     return (
-      <div className="w-64 bg-neutral-850 flex flex-col border-r border-neutral-800">
-        <div className="h-14 px-4 flex items-center border-b border-neutral-800">
+      <div className={`${panel !== 'channels' ? 'hidden md:flex' : 'flex'} w-full md:w-64 bg-neutral-850 flex-col border-r border-neutral-800`}>
+        <div className="h-14 px-4 flex items-center gap-3 border-b border-neutral-800">
+          <button
+            onClick={() => setPanel('servers')}
+            className="md:hidden text-neutral-400 hover:text-white transition-colors"
+          >
+            <ArrowLeft size={20} />
+          </button>
           <span className="font-semibold text-white">Direct Messages</span>
         </div>
         <div className="flex-1 p-6">
@@ -62,17 +70,25 @@ const ChannelList = () => {
 
   return (
     <>
-      <div className="w-64 bg-neutral-850 flex flex-col border-r border-neutral-800">
+      <div className={`${panel !== 'channels' ? 'hidden md:flex' : 'flex'} w-full md:w-64 bg-neutral-850 flex-col border-r border-neutral-800`}>
         {/* Server Header */}
         <div className="relative">
+          <div className="flex items-center border-b border-neutral-800">
+            <button
+              onClick={() => setPanel('servers')}
+              className="md:hidden flex-shrink-0 pl-3 pr-1 h-14 text-neutral-400 hover:text-white transition-colors"
+            >
+              <ArrowLeft size={20} />
+            </button>
           <button
             onClick={() => setShowServerMenu(!showServerMenu)}
-            className="w-full h-14 px-4 flex items-center justify-between border-b border-neutral-800
+            className="flex-1 h-14 px-4 flex items-center justify-between
                      hover:bg-neutral-800 transition-colors"
           >
             <span className="font-semibold text-white truncate">{activeServer.name}</span>
             <ChevronDown size={18} className={`text-neutral-400 transition-transform ${showServerMenu ? 'rotate-180' : ''}`} />
           </button>
+          </div>
 
           {/* Server Dropdown Menu */}
           {showServerMenu && (
@@ -170,7 +186,7 @@ const ChannelList = () => {
                   .map((channel) => (
                     <button
                       key={channel._id}
-                      onClick={() => setActiveChannel(channel)}
+                      onClick={() => { setActiveChannel(channel); setPanel('chat'); }}
                       className={`w-full flex items-center gap-2 px-2 py-2 rounded-lg group
                                ${activeChannel?._id === channel._id
                                  ? 'bg-primary/10 text-white border-l-2 border-primary'

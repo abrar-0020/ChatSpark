@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { useServerStore, useAuthStore } from '../../store';
 import { Plus, Compass, Download, LogOut, User as UserIcon } from 'lucide-react';
+import { useMobileNav } from '../../App';
 import CreateServerModal from './CreateServerModal';
 import JoinServerModal from './JoinServerModal';
 import ProfileModal from '../profile/ProfileModal';
@@ -8,6 +9,7 @@ import ProfileModal from '../profile/ProfileModal';
 const ServerList = () => {
   const { servers, activeServer, setActiveServer, fetchServers } = useServerStore();
   const { user, logout } = useAuthStore();
+  const { panel, setPanel } = useMobileNav();
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showJoinModal, setShowJoinModal] = useState(false);
   const [showProfileModal, setShowProfileModal] = useState(false);
@@ -36,7 +38,7 @@ const ServerList = () => {
 
   return (
     <>
-      <div className="w-20 bg-neutral-850 flex flex-col items-center py-4 gap-3 border-r border-neutral-800">
+      <div className={`${panel !== 'servers' ? 'hidden md:flex' : 'flex'} w-20 bg-neutral-850 flex-col items-center py-4 gap-3 border-r border-neutral-800`}>
         {/* Home / DM Button */}
         <button
           className={`w-14 h-14 rounded-2xl transition-all duration-200
@@ -44,7 +46,7 @@ const ServerList = () => {
                      ${!activeServer 
                        ? 'bg-gradient-to-br from-primary to-accent text-white shadow-medium' 
                        : 'bg-neutral-800 text-neutral-400 hover:bg-neutral-700 hover:text-white'}`}
-          onClick={() => setActiveServer(null)}
+          onClick={() => { setActiveServer(null); setPanel('channels'); }}
         >
           {/* Modern Academic Icon - Stacked layers for knowledge/learning */}
           <svg width="28" height="28" viewBox="0 0 24 24" fill="none" className="text-current">
@@ -67,7 +69,7 @@ const ServerList = () => {
             />
             
             <button
-              onClick={() => setActiveServer(server)}
+              onClick={() => { setActiveServer(server); setPanel('channels'); }}
               className={`w-14 h-14 rounded-2xl transition-all duration-200
                          flex items-center justify-center text-white font-semibold text-sm
                          ${activeServer?._id === server._id 

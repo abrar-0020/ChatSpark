@@ -1,17 +1,19 @@
 import { useEffect, useRef, useState } from 'react';
 import { useServerStore, useMessageStore, useAuthStore } from '../../store';
 import { socketService } from '../../services';
-import { Hash, Users, Bell, BellOff, Pin, Search, Inbox, HelpCircle, X, Keyboard, MessageSquare, AtSign } from 'lucide-react';
+import { Hash, Users, Bell, BellOff, Pin, Search, Inbox, HelpCircle, X, Keyboard, MessageSquare, AtSign, ArrowLeft } from 'lucide-react';
 import MessageItem from './MessageItem';
 import MessageInput from './MessageInput';
 import TypingIndicator from './TypingIndicator';
 import MemberList from '../members/MemberList';
+import { useMobileNav } from '../../App';
 
 const ChatArea = () => {
   const { activeChannel, activeServer } = useServerStore();
   const { messages, fetchMessages, isLoading } = useMessageStore();
   const { user } = useAuthStore();
-  const [showMembers, setShowMembers] = useState(true);
+  const { panel, setPanel } = useMobileNav();
+  const [showMembers, setShowMembers] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [showPinned, setShowPinned] = useState(false);
   const [showInbox, setShowInbox] = useState(false);
@@ -94,7 +96,7 @@ const ChatArea = () => {
 
   if (!activeChannel || !activeServer) {
     return (
-      <div className="flex-1 bg-neutral-800 flex items-center justify-center">
+      <div className={`${panel !== 'chat' ? 'hidden md:flex' : 'flex'} flex-1 bg-neutral-800 items-center justify-center`}>
         <div className="text-center">
           <div className="text-6xl mb-4">💬</div>
           <h2 className="text-2xl font-bold text-white mb-2">No Channel Selected</h2>
@@ -107,12 +109,18 @@ const ChatArea = () => {
   const channelMessages = messages.get(activeChannel._id) || [];
 
   return (
-    <div className="flex-1 flex">
+    <div className={`${panel !== 'chat' ? 'hidden md:flex' : 'flex'} flex-1`}>
       {/* Main Chat Area */}
       <div className="flex-1 bg-neutral-800 flex flex-col relative">
         {/* Channel Header */}
         <div className="h-12 px-4 flex items-center justify-between border-b border-neutral-900 shadow-sm flex-shrink-0">
           <div className="flex items-center gap-2">
+            <button
+              onClick={() => setPanel('channels')}
+              className="md:hidden text-neutral-400 hover:text-white transition-colors mr-1"
+            >
+              <ArrowLeft size={20} />
+            </button>
             <Hash size={24} className="text-neutral-400" />
             <span className="font-semibold text-white">{activeChannel.name}</span>
             {activeChannel.description && (
@@ -138,7 +146,7 @@ const ChatArea = () => {
             {/* Pinned Messages */}
             <button 
               onClick={() => { setShowPinned(!showPinned); setShowInbox(false); setShowHelp(false); }}
-              className={`transition-colors ${showPinned ? 'text-white' : 'text-neutral-400 hover:text-white'}`}
+              className={`hidden md:block transition-colors ${showPinned ? 'text-white' : 'text-neutral-400 hover:text-white'}`}
               title="Pinned messages"
             >
               <Pin size={20} />
@@ -154,7 +162,7 @@ const ChatArea = () => {
             </button>
             
             {/* Search */}
-            <div className="relative">
+            <div className="relative hidden md:block">
               <Search size={18} className="absolute left-2 top-1/2 -translate-y-1/2 text-neutral-400" />
               <input
                 type="text"
@@ -177,7 +185,7 @@ const ChatArea = () => {
             {/* Inbox */}
             <button 
               onClick={() => { setShowInbox(!showInbox); setShowPinned(false); setShowHelp(false); }}
-              className={`transition-colors ${showInbox ? 'text-white' : 'text-neutral-400 hover:text-white'}`}
+              className={`hidden md:block transition-colors ${showInbox ? 'text-white' : 'text-neutral-400 hover:text-white'}`}
               title="Inbox"
             >
               <Inbox size={20} />
@@ -186,7 +194,7 @@ const ChatArea = () => {
             {/* Help */}
             <button 
               onClick={() => { setShowHelp(!showHelp); setShowPinned(false); setShowInbox(false); }}
-              className={`transition-colors ${showHelp ? 'text-white' : 'text-neutral-400 hover:text-white'}`}
+              className={`hidden md:block transition-colors ${showHelp ? 'text-white' : 'text-neutral-400 hover:text-white'}`}
               title="Help"
             >
               <HelpCircle size={20} />

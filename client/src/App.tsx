@@ -1,20 +1,31 @@
-import { useEffect } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { useAuthStore } from './store';
 import { useSocket } from './hooks';
 import { Login, Register } from './pages';
 import { ProtectedRoute, ServerList, ChannelList, ChatArea } from './components';
 
+export type MobilePanel = 'servers' | 'channels' | 'chat';
+export const MobileNavContext = createContext<{
+  panel: MobilePanel;
+  setPanel: (p: MobilePanel) => void;
+}>({ panel: 'servers', setPanel: () => {} });
+
+export const useMobileNav = () => useContext(MobileNavContext);
+
 // Main App Layout Component
 const MainLayout = () => {
   useSocket();
+  const [panel, setPanel] = useState<MobilePanel>('servers');
 
   return (
-    <div className="h-screen flex overflow-hidden">
-      <ServerList />
-      <ChannelList />
-      <ChatArea />
-    </div>
+    <MobileNavContext.Provider value={{ panel, setPanel }}>
+      <div className="h-screen flex overflow-hidden">
+        <ServerList />
+        <ChannelList />
+        <ChatArea />
+      </div>
+    </MobileNavContext.Provider>
   );
 };
 
