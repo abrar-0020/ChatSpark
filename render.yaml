@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: chatspark-backend
+    runtime: node
+    rootDir: server
+    buildCommand: npm install
+    startCommand: node index.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5000
+      - key: JWT_SECRET
+        sync: false   # set manually in Render dashboard
+      - key: JWT_EXPIRES_IN
+        value: 7d
+      - key: CLIENT_URL
+        sync: false   # set to your Vercel frontend URL, e.g. https://chatspark.vercel.app
+    disk:
+      name: chatspark-data
+      mountPath: /opt/render/project/src/storage/data
+      sizeGB: 1

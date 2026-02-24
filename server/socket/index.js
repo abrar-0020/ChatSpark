@@ -45,10 +45,15 @@ const initializeSocket = (io) => {
     userSockets.get(user._id.toString()).add(socket.id);
 
     // Update user status to online
-    const currentUser = await User.findById(user._id);
-    if (currentUser) {
-      currentUser.status = 'online';
-      await currentUser.save();
+    try {
+      const currentUser = await User.findById(user._id);
+      if (currentUser) {
+        currentUser.status = 'online';
+        await currentUser.save();
+      }
+    } catch (error) {
+      console.error(`Error updating user status for ${user.username}:`, error.message);
+      // Continue even if status update fails
     }
 
     // Join user's server rooms

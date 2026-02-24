@@ -33,18 +33,29 @@ class User {
     if (!this.email || !/^\S+@\S+\.\S+$/.test(this.email)) {
       throw new Error('Please enter a valid email');
     }
-    if (!this.password || this.password.length < 6) {
+    
+    // Check if this is an existing user
+    const existingUserIndex = users.findIndex(u => u._id === this._id);
+    const isNewUser = existingUserIndex === -1;
+    
+    // Only validate password for new users or when password is provided
+    if (isNewUser && (!this.password || this.password.length < 6)) {
+      throw new Error('Password must be at least 6 characters');
+    }
+    
+    // For existing users, only validate password if it's being changed
+    if (!isNewUser && this.password && this.password.length < 6 && !this.password.startsWith('$2a$')) {
       throw new Error('Password must be at least 6 characters');
     }
 
-    // Check for duplicates (only if new)
-    const existingUser = users.find(u => u._id !== this._id && (u.username === this.username || u.email === this.email));
-    if (existingUser) {
+    // Check for duplicates (only if new or username/email changed)
+    const duplicateUser = users.find(u => u._id !== this._id && (u.username === this.username || u.email === this.email));
+    if (duplicateUser) {
       throw new Error('Username or email already exists');
     }
 
-    // Hash password if not already hashed
-    if (!this.password.startsWith('$2a$')) {
+    // Hash password if provided and not already hashed
+    if (this.password && !this.password.startsWith('$2a$')) {
       this.password = await bcrypt.hash(this.password, 12);
     }
 
