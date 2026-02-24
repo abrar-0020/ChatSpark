@@ -11,6 +11,14 @@
     <meta name="apple-mobile-web-app-title" content="ChatSpark" />
     <link rel="apple-touch-icon" href="/pwa-192.png" />
     <title>ChatSpark</title>
+    <!-- Capture install prompt before React loads -->
+    <script>
+      window.__pwaInstallPrompt = null;
+      window.addEventListener('beforeinstallprompt', function(e) {
+        e.preventDefault();
+        window.__pwaInstallPrompt = e;
+      });
+    </script>
   </head>
   <body class="bg-discord-dark-500">
     <div id="root"></div>

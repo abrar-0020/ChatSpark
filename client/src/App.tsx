@@ -4,7 +4,6 @@ import { useAuthStore } from './store';
 import { useSocket } from './hooks';
 import { Login, Register } from './pages';
 import { ProtectedRoute, ServerList, ChannelList, ChatArea } from './components';
-import InstallPWA from './components/InstallPWA';
 
 export type MobilePanel = 'servers' | 'channels' | 'chat';
 export const MobileNavContext = createContext<{
@@ -25,7 +24,6 @@ const MainLayout = () => {
         <ServerList />
         <ChannelList />
         <ChatArea />
-        <InstallPWA />
       </div>
     </MobileNavContext.Provider>
   );
