@@ -46,7 +46,7 @@ const MainLayout = () => {
 
   return (
     <MobileNavContext.Provider value={{ panel, setPanel }}>
-      <div className="h-screen flex overflow-hidden">
+      <div className="h-[100dvh] flex overflow-hidden">
         <ServerList />
         <ChannelList />
         <ChatArea />
@@ -79,7 +79,7 @@ function App() {
 
   if (isLoading) {
     return (
-      <div className="h-screen flex items-center justify-center bg-neutral-900">
+      <div className="h-[100dvh] flex items-center justify-center bg-neutral-900">
         <div className="text-center">
           {/* ChatSpark Logo */}
           <div className="relative mb-6">

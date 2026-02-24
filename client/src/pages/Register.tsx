@@ -50,7 +50,7 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-neutral-950 via-neutral-900 to-neutral-950 p-4">
+    <div className="min-h-[100dvh] flex items-center justify-center bg-gradient-to-br from-neutral-950 via-neutral-900 to-neutral-950 p-4">
       <div className="w-full max-w-md">
         <div className="bg-neutral-850 rounded-2xl shadow-hard p-8 border border-neutral-800">
           {/* ChatSpark Logo */}

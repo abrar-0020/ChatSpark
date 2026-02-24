@@ -12,7 +12,7 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-neutral-900">
+      <div className="min-h-[100dvh] flex items-center justify-center bg-neutral-900">
         <div className="text-center">
           <Loader2 className="animate-spin text-primary mx-auto mb-4" size={48} />
           <p className="text-neutral-400">Loading...</p>
