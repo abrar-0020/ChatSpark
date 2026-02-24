@@ -159,7 +159,7 @@ const MessageInput = ({ channelId, channelName }: MessageInputProps) => {
             </button>
             
             {showEmojiPicker && (
-              <div className="absolute bottom-full right-0 mb-2">
+              <div className="fixed bottom-20 left-2 right-2 z-50 md:absolute md:bottom-full md:left-auto md:right-0 md:w-auto">
                 <EmojiPicker
                   onSelect={insertEmoji}
                   onClose={() => setShowEmojiPicker(false)}

@@ -1,5 +1,16 @@
 const { Message, Channel, Server, User } = require('../models');
 const { verifySocketToken } = require('../middleware/auth');
+const webpush = require('web-push');
+const { getSubscriptions, removeSubscription } = require('../storage/pushSubscriptions');
+
+// Configure VAPID once
+if (process.env.VAPID_PUBLIC_KEY && process.env.VAPID_PRIVATE_KEY) {
+  webpush.setVapidDetails(
+    process.env.VAPID_EMAIL || 'mailto:admin@chatspark.app',
+    process.env.VAPID_PUBLIC_KEY,
+    process.env.VAPID_PRIVATE_KEY
+  );
+}
 
 // Store online users: Map<socketId, { userId, user }>
 const onlineUsers = new Map();
@@ -179,6 +190,31 @@ const initializeSocket = (io) => {
           channelId,
           users: typingUsers.has(channelId) ? Array.from(typingUsers.get(channelId)) : []
         });
+
+        // Send push notifications to offline server members
+        if (process.env.VAPID_PUBLIC_KEY) {
+          const offlineMembers = server.members.filter(m => {
+            const memberId = m.user.toString();
+            if (memberId === user._id.toString()) return false; // skip sender
+            // Check if they have any active sockets
+            return !userSockets.has(memberId) || userSockets.get(memberId).size === 0;
+          });
+
+          for (const member of offlineMembers) {
+            const subs = getSubscriptions(member.user.toString());
+            for (const sub of subs) {
+              webpush.sendNotification(sub, JSON.stringify({
+                title: `#${channel.name} — ${server.name}`,
+                body: `${user.username}: ${content.trim().slice(0, 100)}`,
+                channelId,
+                url: '/channels/@me'
+              })).catch(err => {
+                // Subscription expired — clean it up
+                if (err.statusCode === 410) removeSubscription(member.user.toString(), sub.endpoint);
+              });
+            }
+          }
+        }
 
       } catch (error) {
         console.error('Error sending message:', error);

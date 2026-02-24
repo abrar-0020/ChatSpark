@@ -24,7 +24,7 @@ const EmojiPicker = ({ onSelect, onClose }: EmojiPickerProps) => {
 
   return (
     <div 
-      className="w-[352px] h-[420px] bg-neutral-850 rounded-lg shadow-xl overflow-hidden flex flex-col"
+      className="w-full md:w-[352px] h-[350px] md:h-[420px] bg-neutral-850 rounded-lg shadow-xl overflow-hidden flex flex-col border border-neutral-700"
       onClick={(e) => e.stopPropagation()}
     >
       {/* Search */}

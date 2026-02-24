@@ -7,6 +7,7 @@ import { Login, Register } from './pages';
 import { ProtectedRoute, ServerList, ChannelList, ChatArea } from './components';
 import InstallPWA from './components/InstallPWA';
 import ProfileModal from './components/profile/ProfileModal';
+import usePushNotifications from './hooks/usePushNotifications';
 
 const isStandalone = () =>
   window.matchMedia('(display-mode: standalone)').matches ||
@@ -25,6 +26,7 @@ const isMobile = () => /iphone|ipad|ipod|android/i.test(navigator.userAgent);
 // Main App Layout Component
 const MainLayout = () => {
   useSocket();
+  usePushNotifications();
   const [panel, setPanel] = useState<MobilePanel>('channels');
   const [showInstall, setShowInstall] = useState(false);
   const [showProfile, setShowProfile] = useState(false);

@@ -6,7 +6,7 @@ const { Server } = require('socket.io');
 const cors = require('cors');
 const path = require('path');
 
-const { authRoutes, serverRoutes, channelRoutes, messageRoutes } = require('./routes');
+const { authRoutes, serverRoutes, channelRoutes, messageRoutes, pushRoutes } = require('./routes');
 const { initializeSocket } = require('./socket');
 
 const app = express();
@@ -59,6 +59,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/servers', serverRoutes);
 app.use('/api/channels', channelRoutes);
 app.use('/api/messages', messageRoutes);
+app.use('/api/push', pushRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {
