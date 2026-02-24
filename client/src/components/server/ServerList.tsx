@@ -9,7 +9,7 @@ import ProfileModal from '../profile/ProfileModal';
 const ServerList = () => {
   const { servers, activeServer, setActiveServer, fetchServers } = useServerStore();
   const { user, logout } = useAuthStore();
-  const { panel, setPanel } = useMobileNav();
+  const { panel, setPanel, showDM, setShowDM } = useMobileNav();
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showJoinModal, setShowJoinModal] = useState(false);
   const [showProfileModal, setShowProfileModal] = useState(false);
@@ -46,7 +46,7 @@ const ServerList = () => {
                      ${!activeServer 
                        ? 'bg-gradient-to-br from-primary to-accent text-white shadow-medium' 
                        : 'bg-neutral-800 text-neutral-400 hover:bg-neutral-700 hover:text-white'}`}
-          onClick={() => { setActiveServer(null); setPanel('channels'); }}
+          onClick={() => setShowDM(!showDM)}
         >
           {/* Modern Academic Icon - Stacked layers for knowledge/learning */}
           <svg width="28" height="28" viewBox="0 0 24 24" fill="none" className="text-current">
