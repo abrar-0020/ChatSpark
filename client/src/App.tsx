@@ -11,8 +11,6 @@ const isStandalone = () =>
   window.matchMedia('(display-mode: standalone)').matches ||
   (navigator as any).standalone === true;
 
-const isIOS = () => /iphone|ipad|ipod/i.test(navigator.userAgent);
-
 export type MobilePanel = 'channels' | 'chat';
 export const MobileNavContext = createContext<{
   panel: MobilePanel;
@@ -21,25 +19,25 @@ export const MobileNavContext = createContext<{
 
 export const useMobileNav = () => useContext(MobileNavContext);
 
+const isMobile = () => /iphone|ipad|ipod|android/i.test(navigator.userAgent);
+
 // Main App Layout Component
 const MainLayout = () => {
   useSocket();
   const [panel, setPanel] = useState<MobilePanel>('channels');
   const [showInstall, setShowInstall] = useState(false);
 
-  // Auto-show install prompt once on mobile if not already installed
+  // Auto-show install prompt once per session on mobile if not installed
   useEffect(() => {
     if (isStandalone()) return;
-    const shown = localStorage.getItem('pwa-install-shown');
-    if (shown) return;
+    if (!isMobile()) return;
+    // Use sessionStorage — resets each browser session, not permanent
+    if (sessionStorage.getItem('pwa-prompt-shown')) return;
 
     const timer = setTimeout(() => {
-      // Show if iOS always, or if Android has the install prompt
-      if (isIOS() || window.__pwaInstallPrompt) {
-        setShowInstall(true);
-        localStorage.setItem('pwa-install-shown', '1');
-      }
-    }, 3000);
+      setShowInstall(true);
+      sessionStorage.setItem('pwa-prompt-shown', '1');
+    }, 2500);
 
     return () => clearTimeout(timer);
   }, []);
