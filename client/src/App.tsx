@@ -30,6 +30,24 @@ const MainLayout = () => {
   const [showProfile, setShowProfile] = useState(false);
   const { setActiveServer } = useServerStore();
 
+  // Intercept Android/browser back button to navigate panels instead of exiting
+  useEffect(() => {
+    if (panel === 'chat') {
+      // Push a dummy history entry so back button fires popstate instead of leaving the app
+      window.history.pushState({ panel: 'chat' }, '');
+    }
+
+    const handlePopState = () => {
+      if (panel === 'chat') {
+        setPanel('channels');
+        // Push again so back stays within the app if user goes chat → channels → back
+      }
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, [panel]);
+
   // Auto-show install prompt once per session on mobile if not installed
   useEffect(() => {
     if (isStandalone()) return;
