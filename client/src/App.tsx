@@ -1,12 +1,13 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Download, Home, Bell, User as UserIcon } from 'lucide-react';
-import { useAuthStore, useServerStore } from './store';
+import { useAuthStore, useServerStore, useNotificationStore } from './store';
 import { useSocket } from './hooks';
 import { Login, Register } from './pages';
 import { ProtectedRoute, ServerList, ChannelList, ChatArea } from './components';
 import InstallPWA from './components/InstallPWA';
 import ProfileModal from './components/profile/ProfileModal';
+import NotificationsPanel from './components/notifications/NotificationsPanel';
 import usePushNotifications from './hooks/usePushNotifications';
 
 const isStandalone = () =>
@@ -30,7 +31,9 @@ const MainLayout = () => {
   const [panel, setPanel] = useState<MobilePanel>('channels');
   const [showInstall, setShowInstall] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
+  const [showNotifications, setShowNotifications] = useState(false);
   const { setActiveServer } = useServerStore();
+  const unreadCount = useNotificationStore(s => s.notifications.filter(n => !n.read).length);
 
   // Intercept Android/browser back button to navigate panels instead of exiting
   useEffect(() => {
@@ -98,36 +101,15 @@ const MainLayout = () => {
           <span className="text-[10px] font-medium">Home</span>
         </button>
         <button
-          onClick={async () => {
-            if (!('Notification' in window)) return;
-            const permission = await Notification.requestPermission();
-            if (permission === 'granted') {
-              // Re-run subscription in case it wasn't done yet
-              const reg = await navigator.serviceWorker.ready.catch(() => null);
-              if (reg) {
-                const existing = await reg.pushManager.getSubscription();
-                if (!existing) {
-                  // Trigger fresh subscription via page reload if key already cached
-                  const key = sessionStorage.getItem('vapid-public-key');
-                  if (key) {
-                    const pad = '='.repeat((4 - (key.length % 4)) % 4);
-                    const b64 = (key + pad).replace(/-/g, '+').replace(/_/g, '/');
-                    const raw = window.atob(b64);
-                    const arr = new Uint8Array(raw.length);
-                    for (let i = 0; i < raw.length; i++) arr[i] = raw.charCodeAt(i);
-                    const sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: arr });
-                    await fetch('/api/push/subscribe', { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('token')}` }, body: JSON.stringify({ subscription: sub.toJSON() }) });
-                  }
-                }
-              }
-              alert('Notifications are enabled!');
-            } else if (permission === 'denied') {
-              alert('Notifications are blocked. Please enable them in your browser settings.');
-            }
-          }}
-          className="flex flex-col items-center gap-0.5 text-neutral-400 hover:text-white transition-colors"
+          onClick={() => { setShowNotifications(true); }}
+          className="relative flex flex-col items-center gap-0.5 text-neutral-400 hover:text-white transition-colors"
         >
           <Bell size={22} />
+          {unreadCount > 0 && (
+            <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[9px] font-bold min-w-[16px] h-4 flex items-center justify-center rounded-full px-1">
+              {unreadCount > 99 ? '99+' : unreadCount}
+            </span>
+          )}
           <span className="text-[10px] font-medium">Notifications</span>
         </button>
         <button
@@ -140,6 +122,7 @@ const MainLayout = () => {
       </nav>
 
       {showProfile && <ProfileModal onClose={() => setShowProfile(false)} />}
+      {showNotifications && <NotificationsPanel onClose={() => setShowNotifications(false)} />}
     </MobileNavContext.Provider>
   );
 };

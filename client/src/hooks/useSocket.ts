@@ -1,12 +1,13 @@
 import { useEffect, useRef } from 'react';
 import { socketService } from '../services';
-import { useAuthStore, useServerStore, useMessageStore } from '../store';
+import { useAuthStore, useServerStore, useMessageStore, useNotificationStore } from '../store';
 import { Message, User } from '../types';
 
 export const useSocket = () => {
   const { user, isAuthenticated, token } = useAuthStore();
   const { updateMemberStatus, addMember, removeMember, activeServer } = useServerStore();
   const { addMessage, deleteMessage, setTypingUsers } = useMessageStore();
+  const { addNotification } = useNotificationStore();
   const initializedRef = useRef(false);
 
   useEffect(() => {
@@ -18,6 +19,24 @@ export const useSocket = () => {
       socketService.on('message:new', (message: unknown) => {
         const msg = message as Message;
         addMessage(msg.channel, msg);
+
+        // Record as in-app notification if sender is not the current user
+        const senderId = (msg.author as any)?._id || (msg.author as any)?.id || msg.author;
+        const currentId = user._id || user.id;
+        if (senderId && senderId !== currentId) {
+          const state = useServerStore.getState();
+          const server = state.servers.find(s => s.channels.some(c => c._id === msg.channel));
+          const channel = server?.channels.find(c => c._id === msg.channel);
+          addNotification({
+            title: `#${channel?.name ?? 'channel'} — ${server?.name ?? ''}`,
+            body: msg.content,
+            channelId: msg.channel,
+            channelName: channel?.name ?? 'channel',
+            serverName: server?.name ?? '',
+            senderUsername: (msg.author as any)?.username ?? 'Someone',
+            senderAvatar: (msg.author as any)?.avatar ?? null,
+          });
+        }
       });
 
       // Message deleted

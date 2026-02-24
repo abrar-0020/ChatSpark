@@ -47,6 +47,15 @@ export default {
         'hard': '0 8px 32px rgba(0, 0, 0, 0.25)',
         'glow': '0 0 20px rgba(255, 107, 53, 0.3)',
       },
+      keyframes: {
+        'slide-up': {
+          '0%': { transform: 'translateY(100%)' },
+          '100%': { transform: 'translateY(0)' },
+        },
+      },
+      animation: {
+        'slide-up': 'slide-up 0.25s ease-out',
+      },
     },
   },
   plugins: [],
