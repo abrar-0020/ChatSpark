@@ -10,6 +10,7 @@ import { useMobileNav } from '../../App';
 
 const ChatArea = () => {
   const { activeChannel, activeServer } = useServerStore();
+  const onlineCount = activeServer?.members?.filter(m => m.user?.status === 'online').length ?? 0;
   const { messages, fetchMessages, isLoading } = useMessageStore();
   const { user } = useAuthStore();
   const { panel, setPanel } = useMobileNav();
@@ -113,7 +114,7 @@ const ChatArea = () => {
       {/* Main Chat Area */}
       <div className="flex-1 bg-neutral-800 flex flex-col relative">
         {/* Channel Header */}
-        <div className="h-12 px-4 flex items-center justify-between border-b border-neutral-900 shadow-sm flex-shrink-0">
+        <div className="h-14 px-4 flex items-center justify-between border-b border-neutral-900 shadow-sm flex-shrink-0">
           <div className="flex items-center gap-2">
             <button
               onClick={() => setPanel('channels')}
@@ -121,19 +122,34 @@ const ChatArea = () => {
             >
               <ArrowLeft size={20} />
             </button>
-            <Hash size={24} className="text-neutral-400" />
-            <span className="font-semibold text-white">{activeChannel.name}</span>
+            <Hash size={20} className="text-neutral-400 flex-shrink-0" />
+            <div>
+              <p className="font-semibold text-white leading-tight">{activeChannel.name}</p>
+              <p className="text-xs text-neutral-400 md:hidden flex items-center gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-green-400 inline-block" />
+                {onlineCount} Online
+              </p>
+            </div>
             {activeChannel.description && (
-              <>
+              <div className="hidden md:flex items-center">
                 <div className="w-px h-6 bg-neutral-700 mx-2" />
                 <span className="text-sm text-neutral-400 truncate max-w-xs">
                   {activeChannel.description}
                 </span>
-              </>
+              </div>
             )}
           </div>
-          
-          <div className="flex items-center gap-4">
+
+          {/* Mobile: search only */}
+          <button
+            className="md:hidden text-neutral-400 hover:text-white transition-colors"
+            title="Search"
+          >
+            <Search size={20} />
+          </button>
+
+          {/* Desktop: all controls */}
+          <div className="hidden md:flex items-center gap-4">
             {/* Mute/Unmute Notifications */}
             <button 
               onClick={() => setIsMuted(!isMuted)}

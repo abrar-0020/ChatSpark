@@ -1,11 +1,12 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { Download } from 'lucide-react';
-import { useAuthStore } from './store';
+import { Download, Home, Bell, User as UserIcon } from 'lucide-react';
+import { useAuthStore, useServerStore } from './store';
 import { useSocket } from './hooks';
 import { Login, Register } from './pages';
 import { ProtectedRoute, ServerList, ChannelList, ChatArea } from './components';
 import InstallPWA from './components/InstallPWA';
+import ProfileModal from './components/profile/ProfileModal';
 
 const isStandalone = () =>
   window.matchMedia('(display-mode: standalone)').matches ||
@@ -26,6 +27,8 @@ const MainLayout = () => {
   useSocket();
   const [panel, setPanel] = useState<MobilePanel>('channels');
   const [showInstall, setShowInstall] = useState(false);
+  const [showProfile, setShowProfile] = useState(false);
+  const { setActiveServer } = useServerStore();
 
   // Auto-show install prompt once per session on mobile if not installed
   useEffect(() => {
@@ -64,6 +67,30 @@ const MainLayout = () => {
       )}
 
       {showInstall && <InstallPWA onClose={() => setShowInstall(false)} />}
+
+      {/* Mobile bottom tab bar */}
+      <nav className={`${panel === 'chat' ? 'hidden' : 'flex'} md:hidden fixed bottom-0 inset-x-0 z-40 h-14 bg-neutral-900 border-t border-neutral-800 items-center justify-around`}>
+        <button
+          onClick={() => { setActiveServer(null); setPanel('channels'); }}
+          className="flex flex-col items-center gap-0.5 text-neutral-400 hover:text-white transition-colors"
+        >
+          <Home size={22} />
+          <span className="text-[10px] font-medium">Home</span>
+        </button>
+        <button className="flex flex-col items-center gap-0.5 text-neutral-400 hover:text-white transition-colors">
+          <Bell size={22} />
+          <span className="text-[10px] font-medium">Notifications</span>
+        </button>
+        <button
+          onClick={() => setShowProfile(true)}
+          className="flex flex-col items-center gap-0.5 text-neutral-400 hover:text-white transition-colors"
+        >
+          <UserIcon size={22} />
+          <span className="text-[10px] font-medium">You</span>
+        </button>
+      </nav>
+
+      {showProfile && <ProfileModal onClose={() => setShowProfile(false)} />}
     </MobileNavContext.Provider>
   );
 };

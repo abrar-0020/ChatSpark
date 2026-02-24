@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useServerStore, useAuthStore } from '../../store';
-import { Hash, Plus, Settings, ChevronDown, ChevronRight, UserPlus, Trash2, LogOut, Copy, ArrowLeft } from 'lucide-react';
+import { Hash, Plus, Settings, ChevronDown, ChevronRight, UserPlus, Trash2, LogOut, Copy, Search } from 'lucide-react';
 import { useMobileNav } from '../../App';
 import CreateChannelModal from './CreateChannelModal';
 import InviteModal from '../server/InviteModal';
@@ -13,12 +13,24 @@ const ChannelList = () => {
   const [showInviteModal, setShowInviteModal] = useState(false);
   const [showServerMenu, setShowServerMenu] = useState(false);
   const [isTextExpanded, setIsTextExpanded] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
 
   if (!activeServer) {
     return (
-      <div className={`${panel === 'chat' ? 'hidden' : 'flex flex-1'} md:flex md:w-64 md:flex-none bg-neutral-850 flex-col border-r border-neutral-800`}>
+      <div className={`${panel === 'chat' ? 'hidden' : 'flex flex-1'} md:flex md:w-64 md:flex-none bg-neutral-850 flex-col border-r border-neutral-800 pb-14 md:pb-0`}>
         <div className="h-14 px-4 flex items-center border-b border-neutral-800">
           <span className="font-semibold text-white">Direct Messages</span>
+        </div>
+        {/* Search bar */}
+        <div className="px-3 py-2 border-b border-neutral-800">
+          <div className="flex items-center gap-2 bg-neutral-900 rounded-lg px-3 py-2">
+            <Search size={14} className="text-neutral-500 flex-shrink-0" />
+            <input
+              type="text"
+              placeholder="Find or start a conversation"
+              className="bg-transparent text-sm text-white placeholder-neutral-500 flex-1 focus:outline-none"
+            />
+          </div>
         </div>
         <div className="flex-1 p-6">
           <div className="text-center">
@@ -64,7 +76,7 @@ const ChannelList = () => {
 
   return (
     <>
-      <div className={`${panel === 'chat' ? 'hidden' : 'flex flex-1'} md:flex md:w-64 md:flex-none bg-neutral-850 flex-col border-r border-neutral-800`}>
+      <div className={`${panel === 'chat' ? 'hidden' : 'flex flex-1'} md:flex md:w-64 md:flex-none bg-neutral-850 flex-col border-r border-neutral-800 pb-14 md:pb-0`}>
         {/* Server Header */}
         <div className="relative">
           <div className="flex items-center border-b border-neutral-800">
@@ -144,6 +156,20 @@ const ChannelList = () => {
           )}
         </div>
 
+        {/* Search bar */}
+        <div className="px-3 py-2 border-b border-neutral-800">
+          <div className="flex items-center gap-2 bg-neutral-900 rounded-lg px-3 py-2">
+            <Search size={14} className="text-neutral-500 flex-shrink-0" />
+            <input
+              type="text"
+              placeholder="Search"
+              value={searchQuery}
+              onChange={e => setSearchQuery(e.target.value)}
+              className="bg-transparent text-sm text-white placeholder-neutral-500 flex-1 focus:outline-none"
+            />
+          </div>
+        </div>
+
         {/* Channels */}
         <div className="flex-1 overflow-y-auto pt-4">
           {/* Text Channels Category */}
@@ -171,6 +197,7 @@ const ChannelList = () => {
               <div className="space-y-1">
                 {activeServer.channels
                   .filter(channel => channel.type === 'text')
+                  .filter(channel => !searchQuery || channel.name.toLowerCase().includes(searchQuery.toLowerCase()))
                   .map((channel) => (
                     <button
                       key={channel._id}
@@ -197,8 +224,8 @@ const ChannelList = () => {
           </div>
         </div>
 
-        {/* User Panel */}
-        <div className="h-16 bg-neutral-900 border-t border-neutral-800 px-3 flex items-center gap-3">
+        {/* User Panel — desktop only, bottom tab bar handles mobile */}
+        <div className="h-16 bg-neutral-900 border-t border-neutral-800 px-3 hidden md:flex items-center gap-3">
           <div className="relative">
             <div className="w-10 h-10 rounded-full bg-neutral-700 flex items-center justify-center">
               {user?.avatar ? (
