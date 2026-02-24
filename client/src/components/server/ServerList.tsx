@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import { useServerStore, useAuthStore } from '../../store';
-import { Plus, Compass, Download, LogOut, User as UserIcon } from 'lucide-react';
+import { Plus, Compass, LogOut, User as UserIcon } from 'lucide-react';
 import { useMobileNav } from '../../App';
 import CreateServerModal from './CreateServerModal';
 import JoinServerModal from './JoinServerModal';
@@ -122,17 +122,6 @@ const ServerList = () => {
 
         {/* Spacer */}
         <div className="flex-1" />
-
-        {/* Download App (placeholder) */}
-        <button
-          className="w-14 h-14 rounded-2xl transition-all duration-200
-                   flex items-center justify-center bg-neutral-800 text-neutral-400
-                   hover:bg-neutral-700 hover:text-white"
-          title="Download Apps"
-        >
-          <Download size={20} />
-        </button>
-
         {/* User Menu */}
         <div className="relative">
           <button

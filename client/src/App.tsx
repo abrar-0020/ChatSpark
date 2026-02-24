@@ -4,6 +4,7 @@ import { useAuthStore } from './store';
 import { useSocket } from './hooks';
 import { Login, Register } from './pages';
 import { ProtectedRoute, ServerList, ChannelList, ChatArea } from './components';
+import InstallPWA from './components/InstallPWA';
 import { MessageSquare } from 'lucide-react';
 
 export type MobilePanel = 'servers' | 'channels' | 'chat';
@@ -89,6 +90,7 @@ const MainLayout = () => {
         <ChannelList />
         <ChatArea />
         <DMPanel show={showDM} onClose={() => setShowDM(false)} />
+        <InstallPWA />
       </div>
     </MobileNavContext.Provider>
   );
