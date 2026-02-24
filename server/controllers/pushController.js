@@ -1,11 +1,20 @@
 const webpush = require('web-push');
 const { saveSubscription, removeSubscription } = require('../storage/pushSubscriptions');
 
-webpush.setVapidDetails(
-  process.env.VAPID_EMAIL || 'mailto:admin@chatspark.app',
-  process.env.VAPID_PUBLIC_KEY,
-  process.env.VAPID_PRIVATE_KEY
-);
+let vapidConfigured = false;
+function ensureVapid() {
+  if (vapidConfigured) return true;
+  const pub = process.env.VAPID_PUBLIC_KEY;
+  const priv = process.env.VAPID_PRIVATE_KEY;
+  if (!pub || !priv) return false;
+  webpush.setVapidDetails(
+    process.env.VAPID_EMAIL || 'mailto:admin@chatspark.app',
+    pub,
+    priv
+  );
+  vapidConfigured = true;
+  return true;
+}
 
 // GET /api/push/vapid-public-key
 const getVapidPublicKey = (req, res) => {
