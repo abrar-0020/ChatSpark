@@ -1,8 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { useServerStore, useAuthStore } from '../../store';
-import { Plus, Compass, Download, LogOut, User as UserIcon } from 'lucide-react';
+import { Plus, Compass, LogOut, User as UserIcon } from 'lucide-react';
 import { useMobileNav } from '../../App';
-import InstallPWA from '../InstallPWA';
 import CreateServerModal from './CreateServerModal';
 import JoinServerModal from './JoinServerModal';
 import ProfileModal from '../profile/ProfileModal';
@@ -15,7 +14,6 @@ const ServerList = () => {
   const [showJoinModal, setShowJoinModal] = useState(false);
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
-  const [showInstall, setShowInstall] = useState(false);
   const fetchedRef = useRef(false);
 
   useEffect(() => {
@@ -126,18 +124,6 @@ const ServerList = () => {
         {/* Spacer */}
         <div className="flex-1" />
 
-        {/* Install App Button */}
-        {!window.matchMedia('(display-mode: standalone)').matches && (
-          <button
-            onClick={() => setShowInstall(true)}
-            className="w-14 h-14 rounded-2xl transition-all duration-200
-                     flex items-center justify-center bg-neutral-800 text-neutral-400
-                     hover:bg-neutral-700 hover:text-white"
-            title="Install App"
-          >
-            <Download size={20} />
-          </button>
-        )}
         {/* User Menu */}
         <div className="relative">
           <button

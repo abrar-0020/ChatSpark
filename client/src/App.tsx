@@ -1,9 +1,17 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { Download } from 'lucide-react';
 import { useAuthStore } from './store';
 import { useSocket } from './hooks';
 import { Login, Register } from './pages';
 import { ProtectedRoute, ServerList, ChannelList, ChatArea } from './components';
+import InstallPWA from './components/InstallPWA';
+
+const isStandalone = () =>
+  window.matchMedia('(display-mode: standalone)').matches ||
+  (navigator as any).standalone === true;
+
+const isIOS = () => /iphone|ipad|ipod/i.test(navigator.userAgent);
 
 export type MobilePanel = 'channels' | 'chat';
 export const MobileNavContext = createContext<{
@@ -17,6 +25,24 @@ export const useMobileNav = () => useContext(MobileNavContext);
 const MainLayout = () => {
   useSocket();
   const [panel, setPanel] = useState<MobilePanel>('channels');
+  const [showInstall, setShowInstall] = useState(false);
+
+  // Auto-show install prompt once on mobile if not already installed
+  useEffect(() => {
+    if (isStandalone()) return;
+    const shown = localStorage.getItem('pwa-install-shown');
+    if (shown) return;
+
+    const timer = setTimeout(() => {
+      // Show if iOS always, or if Android has the install prompt
+      if (isIOS() || window.__pwaInstallPrompt) {
+        setShowInstall(true);
+        localStorage.setItem('pwa-install-shown', '1');
+      }
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
     <MobileNavContext.Provider value={{ panel, setPanel }}>
@@ -25,6 +51,21 @@ const MainLayout = () => {
         <ChannelList />
         <ChatArea />
       </div>
+
+      {/* Floating install button — always accessible on mobile */}
+      {!isStandalone() && (
+        <button
+          onClick={() => setShowInstall(true)}
+          className="md:hidden fixed bottom-20 right-4 z-50 w-12 h-12 rounded-full
+                     bg-primary shadow-lg flex items-center justify-center
+                     text-white hover:bg-primary/90 transition-colors"
+          title="Install App"
+        >
+          <Download size={20} />
+        </button>
+      )}
+
+      {showInstall && <InstallPWA onClose={() => setShowInstall(false)} />}
     </MobileNavContext.Provider>
   );
 };
