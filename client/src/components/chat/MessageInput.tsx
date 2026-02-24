@@ -79,7 +79,7 @@ const MessageInput = ({ channelId, channelName }: MessageInputProps) => {
 
   return (
     <div className="px-4 pb-6 relative">
-      <div className="bg-neutral-800 rounded-lg flex items-end">
+      <div className="bg-neutral-800 rounded-lg flex items-end overflow-hidden">
         {/* Attachment Button */}
         <button className="p-3 text-neutral-400 hover:text-white transition-colors">
           <PlusCircle size={24} />
@@ -99,18 +99,7 @@ const MessageInput = ({ channelId, channelName }: MessageInputProps) => {
 
         {/* Action Buttons */}
         <div className="flex items-center gap-1 p-2">
-          <div className="relative">
-            <button 
-              onClick={() => {
-                setShowGifPicker(!showGifPicker);
-                setShowStickerPicker(false);
-                setShowEmojiPicker(false);
-              }}
-              className="p-1.5 text-neutral-400 hover:text-white transition-colors"
-              title="Send a GIF"
-            >
-              <Gift size={22} />
-            </button>
+          <div className="relative hidden md:block">
             
             {showGifPicker && (
               <div className="absolute bottom-full right-0 mb-2 bg-neutral-900 border border-neutral-800 rounded-lg p-4 w-72 shadow-xl">
@@ -133,18 +122,7 @@ const MessageInput = ({ channelId, channelName }: MessageInputProps) => {
             )}
           </div>
           
-          <div className="relative">
-            <button 
-              onClick={() => {
-                setShowStickerPicker(!showStickerPicker);
-                setShowGifPicker(false);
-                setShowEmojiPicker(false);
-              }}
-              className="p-1.5 text-neutral-400 hover:text-white transition-colors"
-              title="Send a sticker"
-            >
-              <Sticker size={22} />
-            </button>
+          <div className="relative hidden md:block">
             
             {showStickerPicker && (
               <div className="absolute bottom-full right-0 mb-2 bg-neutral-900 border border-neutral-800 rounded-lg p-4 w-72 shadow-xl">

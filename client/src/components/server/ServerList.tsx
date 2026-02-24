@@ -124,8 +124,8 @@ const ServerList = () => {
         {/* Spacer */}
         <div className="flex-1" />
 
-        {/* User Menu */}
-        <div className="relative">
+        {/* User Menu — desktop only, mobile uses bottom tab bar */}
+        <div className="relative hidden md:block">
           <button
             onClick={() => setShowMenu(!showMenu)}
             className="w-14 h-14 rounded-full bg-neutral-800 flex items-center justify-center
