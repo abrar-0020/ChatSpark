@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
-import { useServerStore, useAuthStore } from '../../store';
-import { Plus, Compass, LogOut, User as UserIcon } from 'lucide-react';
+import { useServerStore, useAuthStore, useNotificationStore } from '../../store';
+import { Plus, Compass, LogOut, User as UserIcon, Bell } from 'lucide-react';
 import { useMobileNav } from '../../App';
 import CreateServerModal from './CreateServerModal';
 import JoinServerModal from './JoinServerModal';
@@ -10,6 +10,7 @@ const ServerList = () => {
   const { servers, activeServer, setActiveServer, fetchServers } = useServerStore();
   const { user, logout } = useAuthStore();
   const { panel, setPanel } = useMobileNav();
+  const { openPanel, unreadCount } = useNotificationStore();
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showJoinModal, setShowJoinModal] = useState(false);
   const [showProfileModal, setShowProfileModal] = useState(false);
@@ -123,6 +124,24 @@ const ServerList = () => {
 
         {/* Spacer */}
         <div className="flex-1" />
+
+        {/* Bell — desktop only */}
+        <div className="relative hidden md:block mb-2">
+          <button
+            onClick={openPanel}
+            className="w-14 h-14 rounded-2xl flex items-center justify-center bg-neutral-800 text-neutral-400
+                     hover:bg-primary hover:text-white hover:rounded-xl transition-all shadow-sm"
+            title="Notifications"
+          >
+            <Bell size={22} />
+          </button>
+          {unreadCount() > 0 && (
+            <span className="absolute top-1 right-1 bg-red-500 text-white text-[9px] font-bold
+                           min-w-[16px] h-4 flex items-center justify-center rounded-full px-1 pointer-events-none">
+              {unreadCount() > 99 ? '99+' : unreadCount()}
+            </span>
+          )}
+        </div>
 
         {/* User Menu — desktop only, mobile uses bottom tab bar */}
         <div className="relative hidden md:block">

@@ -31,9 +31,8 @@ const MainLayout = () => {
   const [panel, setPanel] = useState<MobilePanel>('channels');
   const [showInstall, setShowInstall] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
-  const [showNotifications, setShowNotifications] = useState(false);
   const { setActiveServer } = useServerStore();
-  const unreadCount = useNotificationStore(s => s.notifications.filter(n => !n.read).length);
+  const { openPanel, isOpen: notifOpen, unreadCount } = useNotificationStore();
 
   // Intercept Android/browser back button to navigate panels instead of exiting
   useEffect(() => {
@@ -101,13 +100,13 @@ const MainLayout = () => {
           <span className="text-[10px] font-medium">Home</span>
         </button>
         <button
-          onClick={() => { setShowNotifications(true); }}
+          onClick={() => openPanel()}
           className="relative flex flex-col items-center gap-0.5 text-neutral-400 hover:text-white transition-colors"
         >
           <Bell size={22} />
-          {unreadCount > 0 && (
+          {unreadCount() > 0 && (
             <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[9px] font-bold min-w-[16px] h-4 flex items-center justify-center rounded-full px-1">
-              {unreadCount > 99 ? '99+' : unreadCount}
+              {unreadCount() > 99 ? '99+' : unreadCount()}
             </span>
           )}
           <span className="text-[10px] font-medium">Notifications</span>
@@ -122,7 +121,7 @@ const MainLayout = () => {
       </nav>
 
       {showProfile && <ProfileModal onClose={() => setShowProfile(false)} />}
-      {showNotifications && <NotificationsPanel onClose={() => setShowNotifications(false)} />}
+      {notifOpen && <NotificationsPanel />}
     </MobileNavContext.Provider>
   );
 };

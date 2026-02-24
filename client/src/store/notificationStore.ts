@@ -15,6 +15,9 @@ export interface AppNotification {
 
 interface NotificationState {
   notifications: AppNotification[];
+  isOpen: boolean;
+  openPanel: () => void;
+  closePanel: () => void;
   addNotification: (n: Omit<AppNotification, 'id' | 'read' | 'timestamp'>) => void;
   markAllRead: () => void;
   clearAll: () => void;
@@ -23,6 +26,10 @@ interface NotificationState {
 
 export const useNotificationStore = create<NotificationState>((set, get) => ({
   notifications: [],
+  isOpen: false,
+
+  openPanel: () => { set({ isOpen: true }); get().markAllRead(); },
+  closePanel: () => set({ isOpen: false }),
 
   addNotification: (n) => {
     const notification: AppNotification = {
@@ -45,4 +52,5 @@ export const useNotificationStore = create<NotificationState>((set, get) => ({
   clearAll: () => set({ notifications: [] }),
 
   unreadCount: () => get().notifications.filter(n => !n.read).length,
+
 }));
