@@ -200,8 +200,6 @@ const ServerList = () => {
         </div>
       </div>
 
-      {showInstall && <InstallPWA onClose={() => setShowInstall(false)} />}
-
       {showCreateModal && (
         <CreateServerModal onClose={() => setShowCreateModal(false)} />
       )}
