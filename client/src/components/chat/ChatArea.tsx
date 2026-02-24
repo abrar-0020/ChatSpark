@@ -96,7 +96,7 @@ const ChatArea = () => {
 
   if (!activeChannel || !activeServer) {
     return (
-      <div className={`${panel === 'chat' ? 'flex w-full' : 'hidden'} md:flex md:flex-1 bg-neutral-800 items-center justify-center`}>
+      <div className={`${panel === 'channels' ? 'hidden md:flex' : 'flex'} flex-1 bg-neutral-800 items-center justify-center`}>
         <div className="text-center">
           <div className="text-6xl mb-4">💬</div>
           <h2 className="text-2xl font-bold text-white mb-2">No Channel Selected</h2>
@@ -109,7 +109,7 @@ const ChatArea = () => {
   const channelMessages = messages.get(activeChannel._id) || [];
 
   return (
-    <div className={`${panel === 'chat' ? 'flex w-full' : 'hidden'} md:flex md:flex-1`}>
+    <div className={`${panel === 'channels' ? 'hidden md:flex' : 'flex'} flex-1`}>
       {/* Main Chat Area */}
       <div className="flex-1 bg-neutral-800 flex flex-col relative">
         {/* Channel Header */}

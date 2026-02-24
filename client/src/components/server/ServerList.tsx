@@ -40,7 +40,8 @@ const ServerList = () => {
 
   return (
     <>
-      <div className={`${panel === 'servers' ? 'flex w-full' : 'hidden'} md:flex md:w-20 bg-neutral-850 flex-col items-center py-4 gap-3 border-r border-neutral-800`}>
+      {/* Server bar — always visible, fixed 80px width */}
+      <div className={`${panel === 'chat' ? 'hidden md:flex' : 'flex'} w-20 flex-shrink-0 bg-neutral-850 flex-col items-center py-4 gap-3 border-r border-neutral-800`}>
         {/* Home / DM Button */}
         <button
           className={`w-14 h-14 rounded-2xl transition-all duration-200

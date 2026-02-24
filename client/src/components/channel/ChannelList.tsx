@@ -16,14 +16,8 @@ const ChannelList = () => {
 
   if (!activeServer) {
     return (
-      <div className={`${panel === 'channels' ? 'flex w-full' : 'hidden'} md:flex md:w-64 bg-neutral-850 flex-col border-r border-neutral-800`}>
-        <div className="h-14 px-4 flex items-center gap-3 border-b border-neutral-800">
-          <button
-            onClick={() => setPanel('servers')}
-            className="md:hidden text-neutral-400 hover:text-white transition-colors"
-          >
-            <ArrowLeft size={20} />
-          </button>
+      <div className={`${panel === 'chat' ? 'hidden' : 'flex flex-1'} md:flex md:w-64 md:flex-none bg-neutral-850 flex-col border-r border-neutral-800`}>
+        <div className="h-14 px-4 flex items-center border-b border-neutral-800">
           <span className="font-semibold text-white">Direct Messages</span>
         </div>
         <div className="flex-1 p-6">
@@ -70,16 +64,10 @@ const ChannelList = () => {
 
   return (
     <>
-      <div className={`${panel === 'channels' ? 'flex w-full' : 'hidden'} md:flex md:w-64 bg-neutral-850 flex-col border-r border-neutral-800`}>
+      <div className={`${panel === 'chat' ? 'hidden' : 'flex flex-1'} md:flex md:w-64 md:flex-none bg-neutral-850 flex-col border-r border-neutral-800`}>
         {/* Server Header */}
         <div className="relative">
           <div className="flex items-center border-b border-neutral-800">
-            <button
-              onClick={() => setPanel('servers')}
-              className="md:hidden flex-shrink-0 pl-3 pr-1 h-14 text-neutral-400 hover:text-white transition-colors"
-            >
-              <ArrowLeft size={20} />
-            </button>
           <button
             onClick={() => setShowServerMenu(!showServerMenu)}
             className="flex-1 h-14 px-4 flex items-center justify-between

@@ -5,18 +5,18 @@ import { useSocket } from './hooks';
 import { Login, Register } from './pages';
 import { ProtectedRoute, ServerList, ChannelList, ChatArea } from './components';
 
-export type MobilePanel = 'servers' | 'channels' | 'chat';
+export type MobilePanel = 'channels' | 'chat';
 export const MobileNavContext = createContext<{
   panel: MobilePanel;
   setPanel: (p: MobilePanel) => void;
-}>({ panel: 'servers', setPanel: () => {} });
+}>({ panel: 'channels', setPanel: () => {} });
 
 export const useMobileNav = () => useContext(MobileNavContext);
 
 // Main App Layout Component
 const MainLayout = () => {
   useSocket();
-  const [panel, setPanel] = useState<MobilePanel>('servers');
+  const [panel, setPanel] = useState<MobilePanel>('channels');
 
   return (
     <MobileNavContext.Provider value={{ panel, setPanel }}>
