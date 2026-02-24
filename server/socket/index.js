@@ -191,13 +191,12 @@ const initializeSocket = (io) => {
           users: typingUsers.has(channelId) ? Array.from(typingUsers.get(channelId)) : []
         });
 
-        // Send push notifications to offline server members
+        // Send push notifications to ALL server members (let SW suppress if app is focused)
         if (process.env.VAPID_PUBLIC_KEY) {
           const offlineMembers = server.members.filter(m => {
             const memberId = m.user.toString();
             if (memberId === user._id.toString()) return false; // skip sender
-            // Check if they have any active sockets
-            return !userSockets.has(memberId) || userSockets.get(memberId).size === 0;
+            return true; // send to everyone else — SW suppresses if app is open & focused
           });
 
           for (const member of offlineMembers) {

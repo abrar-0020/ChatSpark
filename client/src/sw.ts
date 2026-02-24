@@ -17,10 +17,20 @@ self.addEventListener('push', (event) => {
     icon: '/pwa-192.png',
     badge: '/pwa-192.png',
     tag: data.channelId || 'chatspark',
+    renotify: true,
     data: { url: data.url || '/' },
   } as NotificationOptions;
 
-  event.waitUntil(self.registration.showNotification(title, options));
+  // Suppress if the app is already open and focused
+  const showNotif = self.clients
+    .matchAll({ type: 'window', includeUncontrolled: true })
+    .then((clients) => {
+      const focused = clients.some((c) => (c as WindowClient).focused);
+      if (focused) return; // app is open — no need to notify
+      return self.registration.showNotification(title, options);
+    });
+
+  event.waitUntil(showNotif);
 });
 
 // Click on notification opens the app

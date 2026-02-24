@@ -97,7 +97,36 @@ const MainLayout = () => {
           <Home size={22} />
           <span className="text-[10px] font-medium">Home</span>
         </button>
-        <button className="flex flex-col items-center gap-0.5 text-neutral-400 hover:text-white transition-colors">
+        <button
+          onClick={async () => {
+            if (!('Notification' in window)) return;
+            const permission = await Notification.requestPermission();
+            if (permission === 'granted') {
+              // Re-run subscription in case it wasn't done yet
+              const reg = await navigator.serviceWorker.ready.catch(() => null);
+              if (reg) {
+                const existing = await reg.pushManager.getSubscription();
+                if (!existing) {
+                  // Trigger fresh subscription via page reload if key already cached
+                  const key = sessionStorage.getItem('vapid-public-key');
+                  if (key) {
+                    const pad = '='.repeat((4 - (key.length % 4)) % 4);
+                    const b64 = (key + pad).replace(/-/g, '+').replace(/_/g, '/');
+                    const raw = window.atob(b64);
+                    const arr = new Uint8Array(raw.length);
+                    for (let i = 0; i < raw.length; i++) arr[i] = raw.charCodeAt(i);
+                    const sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: arr });
+                    await fetch('/api/push/subscribe', { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('token')}` }, body: JSON.stringify({ subscription: sub.toJSON() }) });
+                  }
+                }
+              }
+              alert('Notifications are enabled!');
+            } else if (permission === 'denied') {
+              alert('Notifications are blocked. Please enable them in your browser settings.');
+            }
+          }}
+          className="flex flex-col items-center gap-0.5 text-neutral-400 hover:text-white transition-colors"
+        >
           <Bell size={22} />
           <span className="text-[10px] font-medium">Notifications</span>
         </button>
