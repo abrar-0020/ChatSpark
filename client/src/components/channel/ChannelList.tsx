@@ -16,7 +16,7 @@ const ChannelList = () => {
 
   if (!activeServer) {
     return (
-      <div className={`${panel !== 'channels' ? 'hidden md:flex' : 'flex'} w-full md:w-64 bg-neutral-850 flex-col border-r border-neutral-800`}>
+      <div className={`${panel === 'channels' ? 'flex w-full' : 'hidden'} md:flex md:w-64 bg-neutral-850 flex-col border-r border-neutral-800`}>
         <div className="h-14 px-4 flex items-center gap-3 border-b border-neutral-800">
           <button
             onClick={() => setPanel('servers')}
@@ -70,7 +70,7 @@ const ChannelList = () => {
 
   return (
     <>
-      <div className={`${panel !== 'channels' ? 'hidden md:flex' : 'flex'} w-full md:w-64 bg-neutral-850 flex-col border-r border-neutral-800`}>
+      <div className={`${panel === 'channels' ? 'flex w-full' : 'hidden'} md:flex md:w-64 bg-neutral-850 flex-col border-r border-neutral-800`}>
         {/* Server Header */}
         <div className="relative">
           <div className="flex items-center border-b border-neutral-800">
