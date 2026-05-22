@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ChatSpark - Settings</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "background": "#091324",
+                        "on-secondary-container": "#99b7e2",
+                        "primary-fixed": "#ffdbcd",
+                        "error-container": "#93000a",
+                        "surface-container": "#162031",
+                        "on-tertiary-fixed": "#001d36",
+                        "on-error": "#690005",
+                        "secondary-fixed-dim": "#aac9f4",
+                        "error": "#ffb4ab",
+                        "on-surface-variant": "#e3bfb1",
+                        "on-tertiary-fixed-variant": "#00497c",
+                        "on-background": "#d9e3fb",
+                        "surface": "#091324",
+                        "on-secondary": "#0e3255",
+                        "primary-fixed-dim": "#ffb596",
+                        "on-tertiary": "#003257",
+                        "surface-container-high": "#202a3c",
+                        "on-secondary-fixed": "#001c38",
+                        "on-error-container": "#ffdad6",
+                        "secondary-fixed": "#d3e4ff",
+                        "surface-dim": "#091324",
+                        "secondary": "#aac9f4",
+                        "on-secondary-fixed-variant": "#29486d",
+                        "secondary-container": "#29486d",
+                        "surface-container-low": "#111c2d",
+                        "on-surface": "#d9e3fb",
+                        "surface-variant": "#2b3548",
+                        "tertiary-fixed": "#d1e4ff",
+                        "primary": "#ffb596",
+                        "on-primary-fixed-variant": "#7d2d00",
+                        "surface-bright": "#2f394c",
+                        "outline-variant": "#5a4136",
+                        "inverse-surface": "#d9e3fb",
+                        "on-primary": "#581e00",
+                        "surface-tint": "#ffb596",
+                        "inverse-on-surface": "#273143",
+                        "tertiary": "#9dcaff",
+                        "inverse-primary": "#a33e00",
+                        "outline": "#aa8a7d",
+                        "surface-container-lowest": "#040e1f",
+                        "on-tertiary-container": "#003155",
+                        "tertiary-fixed-dim": "#9dcaff",
+                        "on-primary-container": "#551d00",
+                        "on-primary-fixed": "#360f00",
+                        "primary-container": "#ff6500",
+                        "surface-container-highest": "#2b3548",
+                        "tertiary-container": "#009bfe"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "24px",
+                        "container-max": "1280px",
+                        "margin-mobile": "16px",
+                        "unit": "4px",
+                        "margin-desktop": "40px"
+                    },
+                    "fontFamily": {
+                        "headline-sm": ["Hanken Grotesk"],
+                        "title-lg": ["Hanken Grotesk"],
+                        "body-lg": ["Hanken Grotesk"],
+                        "headline-md": ["Hanken Grotesk"],
+                        "label-md": ["Hanken Grotesk"],
+                        "label-sm": ["Hanken Grotesk"],
+                        "display-lg": ["Hanken Grotesk"],
+                        "display-lg-mobile": ["Hanken Grotesk"],
+                        "body-md": ["Hanken Grotesk"]
+                    },
+                    "fontSize": {
+                        "headline-sm": ["24px", { "lineHeight": "32px", "fontWeight": "700" }],
+                        "title-lg": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "headline-md": ["30px", { "lineHeight": "38px", "fontWeight": "700" }],
+                        "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "fontWeight": "500" }],
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+                        "display-lg-mobile": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        /* Custom styles for subtle animations and scrollbars to enhance the premium feel */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #2b3548; /* surface-variant */
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #1E3E62;
+        }
+        
+        .input-glow-focus:focus-within {
+            box-shadow: 0 0 0 1px #ff6500, 0 0 12px 0 rgba(255, 101, 0, 0.15);
+            border-color: #ff6500;
+        }
+        
+        /* Floating Toast Animation */
+        @keyframes slideUpFade {
+            from { opacity: 0; transform: translateY(20px) translateX(-50%); }
+            to { opacity: 1; transform: translateY(0) translateX(-50%); }
+        }
+        .toast-animate {
+            animation: slideUpFade 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen flex overflow-hidden font-body-md antialiased">
+<!-- Secondary Settings Sidebar (Suppressing Main Nav for focused task) -->
+<aside class="w-64 bg-surface-container-low border-r border-surface-variant flex flex-col h-full hidden md:flex shrink-0">
+<!-- Settings Header -->
+<div class="px-6 py-8 flex items-center gap-3">
+<button aria-label="Go back to app" class="text-on-surface-variant hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">arrow_back</span>
+</button>
+<h1 class="font-title-lg text-title-lg text-primary font-bold tracking-tight">Settings</h1>
+</div>
+<nav class="flex-1 overflow-y-auto px-4 pb-8 space-y-8">
+<!-- User Settings Group -->
+<div>
+<h2 class="px-4 mb-2 font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">User Settings</h2>
+<ul class="space-y-1">
+<li>
+<a class="flex items-center gap-3 bg-secondary-container text-on-secondary-container rounded-lg px-4 py-2 border-l-4 border-primary-container transition-all" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">person</span>
+<span class="font-label-md text-label-md">My Account</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high rounded-lg px-4 py-2 border-l-4 border-transparent transition-all" href="#">
+<span class="material-symbols-outlined">manage_accounts</span>
+<span class="font-label-md text-label-md">Profiles</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high rounded-lg px-4 py-2 border-l-4 border-transparent transition-all" href="#">
+<span class="material-symbols-outlined">palette</span>
+<span class="font-label-md text-label-md">Appearance</span>
+</a>
+</li>
+</ul>
+</div>
+<!-- App Settings Group -->
+<div>
+<h2 class="px-4 mb-2 font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">App Settings</h2>
+<ul class="space-y-1">
+<li>
+<a class="flex items-center gap-3 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high rounded-lg px-4 py-2 border-l-4 border-transparent transition-all" href="#">
+<span class="material-symbols-outlined">notifications</span>
+<span class="font-label-md text-label-md">Notifications</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high rounded-lg px-4 py-2 border-l-4 border-transparent transition-all" href="#">
+<span class="material-symbols-outlined">lock</span>
+<span class="font-label-md text-label-md">Privacy &amp; Safety</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high rounded-lg px-4 py-2 border-l-4 border-transparent transition-all" href="#">
+<span class="material-symbols-outlined">tune</span>
+<span class="font-label-md text-label-md">Advanced</span>
+</a>
+</li>
+</ul>
+</div>
+</nav>
+<!-- Sidebar Footer Action -->
+<div class="p-4 border-t border-surface-variant">
+<button class="w-full flex items-center gap-3 text-error hover:text-on-error hover:bg-error-container rounded-lg px-4 py-2 transition-all">
+<span class="material-symbols-outlined">logout</span>
+<span class="font-label-md text-label-md">Log Out</span>
+</button>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-1 flex flex-col h-full overflow-y-auto relative bg-background">
+<!-- Mobile Header (Visible only on small screens) -->
+<header class="md:hidden flex items-center justify-between p-margin-mobile border-b border-surface-variant bg-surface-container-low sticky top-0 z-20">
+<div class="flex items-center gap-3">
+<button aria-label="Menu" class="text-on-surface-variant">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<h1 class="font-title-lg text-title-lg text-primary font-bold">Settings</h1>
+</div>
+</header>
+<div class="flex-1 p-margin-mobile md:p-margin-desktop max-w-4xl mx-auto w-full pb-32">
+<!-- Section Header -->
+<div class="mb-8">
+<h2 class="font-headline-sm text-headline-sm text-on-surface font-bold">My Account</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1">Manage your personal information and profile appearance.</p>
+</div>
+<!-- Profile Canvas Card (Bento Grid inspired structural container) -->
+<div class="bg-surface-container rounded-xl border border-surface-variant overflow-hidden shadow-sm flex flex-col">
+<!-- Banner Area -->
+<div class="relative h-48 w-full group">
+<img alt="Profile Banner" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="A striking digital abstract art piece used as a profile banner. The image features glowing, generative geometric shapes and flowing liquid lines in deep neon blues and vibrant electric oranges against a dark tectonic space. The lighting is high-contrast, creating a moody yet energetic tech-focused aesthetic that perfectly complements the dark mode UI." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDo8ltWVVPndWf_1mckbY4IzAAzevUPJTL2PpSzSK5kgLsrt8ZNPA-1a03fVF2XCyODfgKa-aB89xKG_0qYJx190alvEliT-wArechWbssK6-9TR3C1Q6BE-4iMa9rmwoE8RZibKPtHIQdJIc6HuWllWlMe2wKqTGMQ2wCEQku-RX_YOYw3ZieEqantjRBXaRJJcqqDe3jcc0oMhH8btdCYCFCn-Z2jn9MmAKCSVPneqFTL-w-IeWToKOPxZkw4oYE29CJgHWqnhAY"/>
+<!-- Banner Overlay/Edit Action -->
+<div class="absolute inset-0 bg-background/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-start justify-end p-4">
+<button aria-label="Edit Banner" class="bg-surface-container-high/80 backdrop-blur text-on-surface p-2 rounded-full hover:bg-primary-container hover:text-on-primary-container transition-colors shadow-sm">
+<span class="material-symbols-outlined" style="font-size: 20px;">edit</span>
+</button>
+</div>
+</div>
+<!-- Avatar & Identity Info Area -->
+<div class="px-6 md:px-10 pb-10 relative">
+<!-- Avatar Floating Over Banner -->
+<div class="relative inline-block -mt-16 mb-6 group">
+<div class="w-32 h-32 rounded-full border-4 border-surface-container bg-surface-container-lowest overflow-hidden shadow-md relative z-10">
+<img alt="Alex Mercer Avatar" class="w-full h-full object-cover" data-alt="A highly detailed close-up portrait of a young man named Alex Mercer, looking directly at the camera with a confident, slight smile. He is bathed in cinematic, high-contrast studio lighting with subtle cool blue and warm orange rim lights reflecting the brand's energetic color palette against a pitch-black background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDDHR0QnMqult0auTQxwiEUHg0YO-c3yZfFGak7SmjgbFjWrbMbd-7onUlecUhByEE-aDn8edSLCWNdiwiqtCyN-Mr7QKdIoSqPzgtmU5vba2Vy4Xryhr2fSr9Znp3_M473CVYl1sT0LonMftalDIP_l2_SPKv4KxI8gUrJLy1N4JxSO6dX7oTzeEjtrNokKjje9Ivpd4uJupiN_eQ5XiJfN6U9BPOQnANyKLHDtp1IzNotDpNrXnQ6HqBqYNBr7O7kC-j-ggttldQ"/>
+</div>
+<!-- Avatar Edit Action -->
+<button aria-label="Edit Avatar" class="absolute bottom-2 right-2 bg-surface-container-high text-on-surface p-2 rounded-full border-2 border-surface-container hover:bg-primary-container hover:text-on-primary-container transition-colors shadow-sm z-20">
+<span class="material-symbols-outlined" style="font-size: 18px;">photo_camera</span>
+</button>
+</div>
+<!-- Editable Form Fields -->
+<form class="space-y-6">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<!-- Display Name Field -->
+<div class="flex flex-col gap-2">
+<label class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wide" for="displayName">Display Name</label>
+<div class="relative input-glow-focus rounded-lg transition-all">
+<input class="w-full bg-surface-container-lowest border border-surface-variant text-on-surface font-body-md px-4 py-3 rounded-lg focus:outline-none placeholder:text-surface-variant transition-colors" id="displayName" type="text" value="Alex Mercer"/>
+</div>
+<p class="font-label-sm text-label-sm text-on-surface-variant/70">This is how you appear to others in ChatSpark.</p>
+</div>
+<!-- Username Field -->
+<div class="flex flex-col gap-2">
+<label class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wide" for="username">Username</label>
+<div class="relative input-glow-focus rounded-lg transition-all flex items-center">
+<span class="absolute left-4 text-on-surface-variant select-none">@</span>
+<input class="w-full bg-surface-container-lowest border border-surface-variant text-on-surface font-body-md pl-8 pr-4 py-3 rounded-lg focus:outline-none placeholder:text-surface-variant transition-colors" id="username" type="text" value="alexmercer_v2"/>
+</div>
+<p class="font-label-sm text-label-sm text-on-surface-variant/70">Unique identifier for mentions.</p>
+</div>
+</div>
+<!-- About Me Field -->
+<div class="flex flex-col gap-2 pt-2">
+<label class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wide" for="about">About Me</label>
+<div class="relative input-glow-focus rounded-lg transition-all">
+<textarea class="w-full bg-surface-container-lowest border border-surface-variant text-on-surface font-body-md px-4 py-3 rounded-lg focus:outline-none placeholder:text-surface-variant transition-colors resize-none" id="about" rows="3">Digital designer by day, gaming enthusiast by night. Always looking for the next spark of inspiration.</textarea>
+</div>
+<div class="flex justify-end">
+<span class="font-label-sm text-label-sm text-on-surface-variant/70">105 / 190</span>
+</div>
+</div>
+<!-- Secondary Actions Area (Danger Zone / Connectivity) -->
+<div class="border-t border-surface-variant mt-8 pt-8 flex flex-col gap-4">
+<h3 class="font-label-md text-label-md text-on-surface">Account Connections</h3>
+<div class="flex items-center justify-between p-4 bg-surface-container-lowest border border-surface-variant rounded-lg">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-surface-bright flex items-center justify-center text-on-surface">
+<span class="material-symbols-outlined">mail</span>
+</div>
+<div>
+<div class="font-label-md text-label-md text-on-surface">Email Address</div>
+<div class="font-body-md text-sm text-on-surface-variant">alex.mercer@example.com</div>
+</div>
+</div>
+<button class="px-4 py-2 text-primary hover:text-primary-fixed border border-primary/30 hover:bg-primary/10 rounded-lg font-label-md text-label-md transition-colors" type="button">
+                                    Edit
+                                </button>
+</div>
+</div>
+</form>
+</div>
+</div>
+</div>
+<!-- Floating Unsaved Changes Toast / Action Bar -->
+<!-- Fixed at the bottom center of the main content area, visible state triggered conceptually -->
+<div class="fixed bottom-8 left-1/2 md:left-[calc(50%+8rem)] z-50 flex items-center justify-between gap-6 px-6 py-4 bg-surface-container-high/95 backdrop-blur-md border border-surface-variant shadow-[0_8px_32px_rgba(0,0,0,0.4)] rounded-xl toast-animate">
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface">Unsaved changes</span>
+<span class="font-body-md text-sm text-on-surface-variant">You have uncommitted modifications.</span>
+</div>
+<div class="flex items-center gap-3">
+<button class="px-4 py-2 font-label-md text-label-md text-on-surface hover:text-on-surface-variant hover:bg-surface-variant rounded-lg transition-colors">
+                    Reset
+                </button>
+<button class="px-6 py-2 font-label-md text-label-md bg-primary-container text-white rounded-lg hover:bg-[#ff8533] shadow-[0_0_15px_rgba(255,101,0,0.3)] transition-all active:scale-95 flex items-center gap-2">
+<span class="material-symbols-outlined" style="font-size: 18px;">save</span>
+                    Save Changes
+                </button>
+</div>
+</div>
+</main>
+</body></html>

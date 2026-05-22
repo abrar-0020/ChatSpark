@@ -17,13 +17,12 @@ const ChannelList = () => {
 
   if (!activeServer) {
     return (
-      <div className={`${panel === 'chat' ? 'hidden' : 'flex flex-1'} md:flex md:w-64 md:flex-none bg-neutral-850 flex-col border-r border-neutral-800 pb-14 md:pb-0`}>
-        <div className="h-14 px-4 flex items-center border-b border-neutral-800">
+      <div className={`${panel === 'chat' ? 'hidden' : 'flex flex-1'} md:flex md:w-72 md:flex-none bg-neutral-950 flex-col border-r border-neutral-800 pb-14 md:pb-0`}>
+        <div className="h-14 px-5 flex items-center border-b border-neutral-800 bg-neutral-900/60">
           <span className="font-semibold text-white">Direct Messages</span>
         </div>
-        {/* Search bar */}
-        <div className="px-3 py-2 border-b border-neutral-800">
-          <div className="flex items-center gap-2 bg-neutral-900 rounded-lg px-3 py-2">
+        <div className="px-4 py-3 border-b border-neutral-800">
+          <div className="flex items-center gap-2 bg-neutral-900 rounded-lg px-3 py-2 border border-neutral-800">
             <Search size={14} className="text-neutral-500 flex-shrink-0" />
             <input
               type="text"
@@ -32,14 +31,12 @@ const ChannelList = () => {
             />
           </div>
         </div>
-        <div className="flex-1 p-6">
-          <div className="text-center">
-            <div className="w-12 h-12 bg-neutral-800 rounded-xl flex items-center justify-center mx-auto mb-3">
+        <div className="flex-1 p-6 flex items-center justify-center">
+          <div className="text-center max-w-xs">
+            <div className="w-12 h-12 bg-neutral-800 rounded-xl flex items-center justify-center mx-auto mb-3 border border-neutral-700">
               <Hash size={24} className="text-neutral-500" />
             </div>
-            <p className="text-neutral-400 text-sm">
-              Select a server to view channels
-            </p>
+            <p className="text-neutral-400 text-sm">Select a server to view channels</p>
           </div>
         </div>
       </div>
@@ -76,21 +73,19 @@ const ChannelList = () => {
 
   return (
     <>
-      <div className={`${panel === 'chat' ? 'hidden' : 'flex flex-1'} md:flex md:w-64 md:flex-none bg-neutral-850 flex-col border-r border-neutral-800 pb-14 md:pb-0`}>
-        {/* Server Header */}
+      <div className={`${panel === 'chat' ? 'hidden' : 'flex flex-1'} md:flex md:w-72 md:flex-none bg-neutral-950 flex-col border-r border-neutral-800 pb-14 md:pb-0`}>
         <div className="relative">
-          <div className="flex items-center border-b border-neutral-800">
           <button
             onClick={() => setShowServerMenu(!showServerMenu)}
-            className="flex-1 h-14 px-4 flex items-center justify-between
-                     hover:bg-neutral-800 transition-colors"
+            className="w-full h-14 px-5 flex items-center justify-between border-b border-neutral-800 bg-neutral-900/60 hover:bg-neutral-900 transition-colors"
           >
-            <span className="font-semibold text-white truncate">{activeServer.name}</span>
+            <div className="flex flex-col items-start text-left min-w-0">
+              <span className="font-semibold text-white truncate">{activeServer.name}</span>
+              <span className="text-[11px] text-neutral-500 truncate">Premium Tier Workspace</span>
+            </div>
             <ChevronDown size={18} className={`text-neutral-400 transition-transform ${showServerMenu ? 'rotate-180' : ''}`} />
           </button>
-          </div>
 
-          {/* Server Dropdown Menu */}
           {showServerMenu && (
             <div className="absolute top-16 left-2 right-2 bg-neutral-800 rounded-xl shadow-hard z-50 overflow-hidden border border-neutral-700">
               <button
@@ -156,9 +151,8 @@ const ChannelList = () => {
           )}
         </div>
 
-        {/* Search bar */}
-        <div className="px-3 py-2 border-b border-neutral-800">
-          <div className="flex items-center gap-2 bg-neutral-900 rounded-lg px-3 py-2">
+        <div className="px-4 py-3 border-b border-neutral-800">
+          <div className="flex items-center gap-2 bg-neutral-900 rounded-lg px-3 py-2 border border-neutral-800">
             <Search size={14} className="text-neutral-500 flex-shrink-0" />
             <input
               type="text"
@@ -170,17 +164,14 @@ const ChannelList = () => {
           </div>
         </div>
 
-        {/* Channels */}
         <div className="flex-1 overflow-y-auto pt-4">
-          {/* Text Channels Category */}
           <div className="px-3">
             <button
               onClick={() => setIsTextExpanded(!isTextExpanded)}
-              className="flex items-center gap-1.5 text-xs font-semibold text-neutral-400 
-                       uppercase tracking-wider hover:text-neutral-200 transition-colors mb-2 px-1"
+              className="flex items-center gap-1.5 text-xs font-semibold text-neutral-400 uppercase tracking-wider hover:text-neutral-200 transition-colors mb-2 px-1"
             >
               {isTextExpanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
-              Text Channels
+              Channels
               {isAdmin && (
                 <Plus
                   size={16}
@@ -202,21 +193,11 @@ const ChannelList = () => {
                     <button
                       key={channel._id}
                       onClick={() => { setActiveChannel(channel); setPanel('chat'); }}
-                      className={`w-full flex items-center gap-2 px-2 py-2 rounded-lg group
-                               ${activeChannel?._id === channel._id
-                                 ? 'bg-primary/10 text-white border-l-2 border-primary'
-                                 : 'text-neutral-400 hover:bg-neutral-800 hover:text-white'
-                               } transition-all`}
+                      className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg group transition-all ${activeChannel?._id === channel._id ? 'bg-primary/10 text-white border-l-2 border-primary' : 'text-neutral-400 hover:bg-neutral-800 hover:text-white'}`}
                     >
                       <Hash size={18} className="flex-shrink-0" />
-                      <span className="truncate text-sm font-medium">{channel.name}</span>
-                      {isAdmin && (
-                        <Settings
-                          size={16}
-                          className="ml-auto opacity-0 group-hover:opacity-100
-                                   hover:text-primary transition-all"
-                        />
-                      )}
+                      <span className="truncate text-sm font-medium flex-1 text-left">{channel.name}</span>
+                      {isAdmin && <Settings size={16} className="opacity-0 group-hover:opacity-100 hover:text-primary transition-all" />}
                     </button>
                   ))}
               </div>
@@ -224,7 +205,6 @@ const ChannelList = () => {
           </div>
         </div>
 
-        {/* User Panel — desktop only, bottom tab bar handles mobile */}
         <div className="h-16 bg-neutral-900 border-t border-neutral-800 px-3 hidden md:flex items-center gap-3">
           <div className="relative">
             <div className="w-10 h-10 rounded-full bg-neutral-700 flex items-center justify-center">

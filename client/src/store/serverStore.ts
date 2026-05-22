@@ -317,23 +317,30 @@ export const useServerStore = create<ServerState>((set, get) => ({
   },
 
   addMember: (serverId: string, user: User) => {
-    set(state => ({
-      servers: state.servers.map(server => {
-        if (server._id === serverId) {
+    set(state => {
+      const userId = user._id || user.id;
+      const isMember = (members: typeof state.servers[0]['members']) =>
+        members.some(m => (m.user._id || m.user.id) === userId);
+
+      return {
+        servers: state.servers.map(server => {
+          if (server._id !== serverId) return server;
+          if (isMember(server.members)) return server;
           return {
             ...server,
             members: [...server.members, { user, role: 'member' as const, joinedAt: new Date().toISOString() }]
           };
-        }
-        return server;
-      }),
-      activeServer: state.activeServer?._id === serverId
-        ? {
-            ...state.activeServer,
-            members: [...state.activeServer.members, { user, role: 'member' as const, joinedAt: new Date().toISOString() }]
-          }
-        : state.activeServer
-    }));
+        }),
+        activeServer: state.activeServer?._id === serverId
+          ? (isMember(state.activeServer.members)
+              ? state.activeServer
+              : {
+                  ...state.activeServer,
+                  members: [...state.activeServer.members, { user, role: 'member' as const, joinedAt: new Date().toISOString() }]
+                })
+          : state.activeServer
+      };
+    });
   },
 
   removeMember: (serverId: string, userId: string) => {

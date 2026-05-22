@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ChatSpark - Workspace Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "background": "#091324",
+                        "on-secondary-container": "#99b7e2",
+                        "primary-fixed": "#ffdbcd",
+                        "error-container": "#93000a",
+                        "surface-container": "#162031",
+                        "on-tertiary-fixed": "#001d36",
+                        "on-error": "#690005",
+                        "secondary-fixed-dim": "#aac9f4",
+                        "error": "#ffb4ab",
+                        "on-surface-variant": "#e3bfb1",
+                        "on-tertiary-fixed-variant": "#00497c",
+                        "on-background": "#d9e3fb",
+                        "surface": "#091324",
+                        "on-secondary": "#0e3255",
+                        "primary-fixed-dim": "#ffb596",
+                        "on-tertiary": "#003257",
+                        "surface-container-high": "#202a3c",
+                        "on-secondary-fixed": "#001c38",
+                        "on-error-container": "#ffdad6",
+                        "secondary-fixed": "#d3e4ff",
+                        "surface-dim": "#091324",
+                        "secondary": "#aac9f4",
+                        "on-secondary-fixed-variant": "#29486d",
+                        "secondary-container": "#29486d",
+                        "surface-container-low": "#111c2d",
+                        "on-surface": "#d9e3fb",
+                        "surface-variant": "#2b3548",
+                        "tertiary-fixed": "#d1e4ff",
+                        "primary": "#ffb596",
+                        "on-primary-fixed-variant": "#7d2d00",
+                        "surface-bright": "#2f394c",
+                        "outline-variant": "#5a4136",
+                        "inverse-surface": "#d9e3fb",
+                        "on-primary": "#581e00",
+                        "surface-tint": "#ffb596",
+                        "inverse-on-surface": "#273143",
+                        "tertiary": "#9dcaff",
+                        "inverse-primary": "#a33e00",
+                        "outline": "#aa8a7d",
+                        "surface-container-lowest": "#040e1f",
+                        "on-tertiary-container": "#003155",
+                        "tertiary-fixed-dim": "#9dcaff",
+                        "on-primary-container": "#551d00",
+                        "on-primary-fixed": "#360f00",
+                        "primary-container": "#ff6500",
+                        "surface-container-highest": "#2b3548",
+                        "tertiary-container": "#009bfe"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "24px",
+                        "container-max": "1280px",
+                        "margin-mobile": "16px",
+                        "unit": "4px",
+                        "margin-desktop": "40px"
+                    },
+                    "fontFamily": {
+                        "headline-sm": ["Hanken Grotesk"],
+                        "title-lg": ["Hanken Grotesk"],
+                        "body-lg": ["Hanken Grotesk"],
+                        "headline-md": ["Hanken Grotesk"],
+                        "label-md": ["Hanken Grotesk"],
+                        "label-sm": ["Hanken Grotesk"],
+                        "display-lg": ["Hanken Grotesk"],
+                        "display-lg-mobile": ["Hanken Grotesk"],
+                        "body-md": ["Hanken Grotesk"]
+                    },
+                    "fontSize": {
+                        "headline-sm": ["24px", { "lineHeight": "32px", "fontWeight": "700" }],
+                        "title-lg": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "headline-md": ["30px", { "lineHeight": "38px", "fontWeight": "700" }],
+                        "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "fontWeight": "500" }],
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+                        "display-lg-mobile": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            background-color: theme('colors.background');
+            color: theme('colors.on-surface');
+            overflow: hidden;
+        }
+        
+        /* Custom scrollbar for webkit */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: theme('colors.surface-container');
+        }
+        ::-webkit-scrollbar-thumb {
+            background: theme('colors.surface-variant');
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: theme('colors.surface-container-highest');
+        }
+        
+        .nav-glow {
+            box-shadow: 0 0 15px rgba(255, 101, 0, 0.15);
+        }
+        
+        .border-left-primary {
+            border-left-width: 4px;
+            border-color: theme('colors.primary-container');
+        }
+    </style>
+</head>
+<body class="h-screen w-full flex flex-col md:flex-row bg-background">
+<!-- Left Activity Bar (Server Switching) -->
+<aside class="w-16 h-full flex flex-col items-center py-4 bg-surface-container-low border-r border-surface-variant z-20 flex-shrink-0 hidden md:flex">
+<!-- Brand Logo -->
+<div class="w-12 h-12 rounded-xl bg-primary-container flex items-center justify-center mb-6 cursor-pointer hover:bg-primary-fixed transition-colors nav-glow">
+<span class="material-symbols-outlined text-white" style="font-variation-settings: 'FILL' 1;">bolt</span>
+</div>
+<!-- Divider -->
+<div class="w-8 h-[2px] bg-surface-variant rounded-full mb-6"></div>
+<!-- Servers -->
+<div class="flex flex-col gap-4 items-center flex-grow overflow-y-auto w-full no-scrollbar px-2">
+<!-- Active Server -->
+<div class="relative group cursor-pointer w-full flex justify-center">
+<div class="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-primary-container rounded-r-full"></div>
+<div class="w-12 h-12 rounded-xl bg-surface-container-highest flex items-center justify-center overflow-hidden border-2 border-primary-container">
+<img alt="Workspace 1" class="w-full h-full object-cover" data-alt="A sleek, abstract digital geometric pattern featuring deep navy and bright orange lines intersecting, symbolizing connectivity and dynamic tech energy. High contrast, modern dark mode aesthetic with sharp edges and subtle glowing effects." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDYPCoP0iBDEG3Jii8cc1b5Wb_cbyy_B0xxbAoKHDj-zY9K_hAfSVAqtA1UlLeWneDhoNHBrtQbxKRIuVx21ITaBQw1eZ8ywWsXOYUVXx16s5g8i0khucQijFn8kaHjFAgYPUkuaZglrXOzm2zrYW8txO9Fi43JVpI0lHAoaFZwxQRWYovCKLLjiLLCy1uz6Cu3IETpBYMgyxy1LxyN5X5q7dTvPfCpathRMOZW2BnCH32MrWIALDOmHfAq5vf3l0xpor8v0BuvPtw"/>
+</div>
+</div>
+<!-- Inactive Servers -->
+<div class="relative group cursor-pointer w-full flex justify-center transition-all">
+<div class="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-0 bg-on-surface-variant rounded-r-full group-hover:h-5 transition-all"></div>
+<div class="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center overflow-hidden hover:rounded-xl transition-all border border-surface-variant group-hover:border-on-surface-variant">
+<img alt="Workspace 2" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" data-alt="A smooth, flowing liquid dark gradient background featuring deep blues and subtle purple hues. The surface appears glossy and dynamic, reflecting dim light, evoking a sense of calm depth and premium corporate design." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBnHdZs2O4L278lS7wnQkfj1VjVg24PaL8EMwwX0N3biVoHecFaFqiIJS_f8VKbonAji1r5BTJwSUv8ruEYzNNt8A6YIovOFID03lKopKLOEvSfUt6tu9sQYMWK_f9W68kmGBUo7sfBD7xGuyjntQXUeEjZOR7z3EXPgVo_i8ovLCSNQl6wbCx5a-8cFf5TaObpXiRLIGOESzjUc-gXb4l6owGn3OoYYRTV0QgB_T19nx-MYfVrtYHTpG6SLPYt0O1u-iFo3MIR8e0"/>
+</div>
+</div>
+<div class="relative group cursor-pointer w-full flex justify-center transition-all">
+<div class="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-0 bg-on-surface-variant rounded-r-full group-hover:h-5 transition-all"></div>
+<div class="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center overflow-hidden hover:rounded-xl transition-all border border-surface-variant group-hover:border-on-surface-variant">
+<span class="font-title-lg text-title-lg text-on-surface-variant group-hover:text-on-surface">DS</span>
+</div>
+</div>
+<!-- Add Server -->
+<div class="relative group cursor-pointer w-full flex justify-center mt-2 transition-all">
+<div class="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center overflow-hidden hover:rounded-xl hover:bg-surface-container-high transition-all border border-surface-variant border-dashed text-primary-container hover:text-primary-fixed">
+<span class="material-symbols-outlined">add</span>
+</div>
+</div>
+</div>
+</aside>
+<!-- SideNavBar (Channel Sidebar) -->
+<nav class="bg-surface dark:bg-surface border-r border-surface-variant flex flex-col h-full py-gutter docked left-0 h-screen w-64 flex-shrink-0 z-10 hidden md:flex">
+<!-- Header -->
+<div class="px-6 mb-8 flex items-center gap-3 cursor-pointer hover:opacity-80 transition-opacity">
+<div class="w-10 h-10 rounded-lg overflow-hidden bg-surface-container">
+<img alt="Workspace Logo" class="w-full h-full object-cover" data-alt="A sleek, abstract digital geometric pattern featuring deep navy and bright orange lines intersecting, symbolizing connectivity and dynamic tech energy. High contrast, modern dark mode aesthetic with sharp edges and subtle glowing effects." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCw2AwS3CBVL33wPtaI0CXaAZ8DZOA8zQjJfiAakse0G9T2Ouzaby-DCKgOxfYRKJCLbokm35Xk9hZVM1o7OXtE3s2SGxH-TLaWf7YEQ0cJA70dX1y34uUAcfQSutvd_c3JxqB05AT5p1gwE1BP8fTg11-9ZUx9nmsZ70hUndOFSddeoQ9cDlQz0NX9ool9A6hgl5jyftVS16ZKHgpdJ6YqSzQPBFsBLqihbklv-3Msl2qBrAVSEM8k6tF2O2UUuY1UMzEFXHwKchY"/>
+</div>
+<div class="flex-grow overflow-hidden">
+<h1 class="font-headline-sm text-headline-sm font-black text-primary dark:text-primary truncate">Spark HQ</h1>
+<p class="font-label-sm text-label-sm text-on-surface-variant truncate">Premium Tier</p>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant">expand_more</span>
+</div>
+<!-- Navigation Links -->
+<div class="flex flex-col gap-1 px-2 flex-grow overflow-y-auto no-scrollbar">
+<!-- Section: Channels -->
+<div class="px-4 py-2 mt-2 mb-1 flex items-center justify-between group cursor-pointer">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider group-hover:text-on-surface transition-colors">Channels</span>
+<span class="material-symbols-outlined text-on-surface-variant text-[16px] group-hover:text-on-surface transition-colors">add</span>
+</div>
+<a class="flex items-center gap-3 text-on-surface-variant hover:text-on-surface px-4 py-2 hover:bg-surface-container-high dark:hover:bg-surface-container-high transition-all active:translate-x-1 rounded-lg mx-2 mb-1 group" href="#">
+<span class="material-symbols-outlined text-[20px] group-hover:text-on-surface">tag</span>
+<span class="font-label-md text-label-md flex-grow">general</span>
+</a>
+<!-- Active Channel -->
+<a class="flex items-center gap-3 bg-secondary-container text-on-secondary-container rounded-lg px-4 py-2 border-l-4 border-primary hover:bg-surface-container-high dark:hover:bg-surface-container-high transition-all active:translate-x-1 mx-2 mb-1" href="#">
+<span class="material-symbols-outlined text-[20px] text-primary-container" style="font-variation-settings: 'FILL' 1;">tag</span>
+<span class="font-label-md text-label-md flex-grow font-bold text-white">development</span>
+<span class="bg-primary-container text-white text-[10px] px-1.5 py-0.5 rounded-full font-bold">3</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant hover:text-on-surface px-4 py-2 hover:bg-surface-container-high dark:hover:bg-surface-container-high transition-all active:translate-x-1 rounded-lg mx-2 mb-1 group" href="#">
+<span class="material-symbols-outlined text-[20px] group-hover:text-on-surface">tag</span>
+<span class="font-label-md text-label-md flex-grow">design</span>
+</a>
+<!-- Section: Direct Messages -->
+<div class="px-4 py-2 mt-6 mb-1 flex items-center justify-between group cursor-pointer">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider group-hover:text-on-surface transition-colors">Direct Messages</span>
+<span class="material-symbols-outlined text-on-surface-variant text-[16px] group-hover:text-on-surface transition-colors">add</span>
+</div>
+<a class="flex items-center gap-3 text-on-surface-variant hover:text-on-surface px-4 py-2 hover:bg-surface-container-high dark:hover:bg-surface-container-high transition-all active:translate-x-1 rounded-lg mx-2 mb-1 group" href="#">
+<div class="relative">
+<img alt="Sarah Jenkins" class="w-6 h-6 rounded-full object-cover" data-alt="A professional headshot of a young woman with a warm smile, wearing a dark blazer over a light shirt. Soft, natural lighting against a neutral dark grey background. High resolution, clear focus, suitable for a modern corporate avatar." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDLX9LaSXRVTi-vzaGGb1ZqRcT9FdnXi006luIDpyZEVBwn_Tahn52idHEKj_aKw4NtTrlLU3w29K2k8M5DUfB9OimhBNIsCnSHQq24NUJpu-7gt78eJNuyvawSUIqChRunDsecNY1hdpObAsqnMwdTDoZrTImt8IPvok4U300ituku-7B2G36SbzVh0Z1RhPjBHnvJbK0cLKkf9DH3QBNh1-QPwfLmM9uUsz8CMe4CNh5zTU7ETkXbxu2WzGBMcUMOPUZagfIikp0"/>
+<div class="absolute bottom-0 right-0 w-2 h-2 bg-green-500 rounded-full border border-surface"></div>
+</div>
+<span class="font-label-md text-label-md flex-grow">Sarah Jenkins</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant hover:text-on-surface px-4 py-2 hover:bg-surface-container-high dark:hover:bg-surface-container-high transition-all active:translate-x-1 rounded-lg mx-2 mb-1 group" href="#">
+<div class="relative">
+<img alt="Marcus Thorne" class="w-6 h-6 rounded-full object-cover" data-alt="A portrait of a young man with a slight stubble, wearing a casual dark crew neck t-shirt. Studio lighting emphasizing sharp features against a dark, moody background. Professional and approachable tech worker aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAMAfzqCTTmYBxPrcGNC3Ph5hssjpPNyiLfYHGZh_Okq3t6v690qhP9_-Cj6whYjxsQ4OW1linWb8fWjmA0YWEMA_1CjxFSYCN8ar4qCbq3Or7gR8qqyROxO0Ddlh4o9TYzY6gQ5cmpS-vFDIwIUpLv21BaPv8HZzmqnvAOxRJ8aNWLuQ2l6FDl7bi7fws0jLLoFO9J1isovjHxrkyM0zs22GrRJ_nMzfxDdET2MC_nmFmmMZYWwQPf4P3L0Pmz7md6hrWwoNocyWA"/>
+<div class="absolute bottom-0 right-0 w-2 h-2 bg-surface-variant rounded-full border border-surface"></div>
+</div>
+<span class="font-label-md text-label-md flex-grow">Marcus Thorne</span>
+</a>
+</div>
+<!-- Call to Action -->
+<div class="px-6 mt-4 mb-6">
+<button class="w-full bg-surface-container border border-surface-variant hover:border-primary-container text-primary-fixed hover:text-white font-label-md text-label-md py-2 px-4 rounded-lg transition-colors flex items-center justify-center gap-2 group">
+<span class="material-symbols-outlined text-[18px] group-hover:text-primary-container transition-colors">verified</span>
+                Upgrade Plan
+            </button>
+</div>
+</nav>
+<!-- Main Content Area -->
+<main class="flex-grow flex flex-col h-full bg-background relative overflow-hidden">
+<!-- TopAppBar (Mobile & Desktop Content Header) -->
+<header class="flex justify-between items-center w-full px-6 h-16 bg-background dark:bg-background border-b border-surface-variant shadow-sm flex-shrink-0 z-10">
+<!-- Mobile Menu Toggle -->
+<button class="md:hidden mr-4 text-on-surface-variant hover:text-on-surface">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<!-- Channel Title area -->
+<div class="flex items-center gap-3 flex-grow">
+<span class="material-symbols-outlined text-on-surface-variant text-[24px]">tag</span>
+<h2 class="font-headline-sm text-headline-sm font-bold text-on-surface">development</h2>
+<div class="hidden sm:flex items-center gap-2 text-on-surface-variant font-body-md text-body-md ml-2 border-l border-surface-variant pl-4">
+<span class="truncate max-w-md">Frontend rebuild sprint discussion &amp; PR reviews</span>
+</div>
+</div>
+<!-- Trailing Actions -->
+<div class="flex items-center gap-4">
+<div class="hidden md:flex items-center bg-surface-container-low border border-surface-variant rounded-lg px-3 py-1.5 focus-within:border-primary-container focus-within:nav-glow transition-all">
+<span class="material-symbols-outlined text-on-surface-variant text-[18px] mr-2">search</span>
+<input class="bg-transparent border-none text-on-surface font-body-md text-body-md focus:ring-0 p-0 w-48 placeholder-on-surface-variant/50" placeholder="Search..." type="text"/>
+</div>
+<button class="text-on-surface-variant hover:text-on-surface transition-colors active:scale-95">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="text-on-surface-variant hover:text-on-surface transition-colors active:scale-95 hidden sm:block">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<!-- Profile Image -->
+<button class="w-8 h-8 rounded-full overflow-hidden border border-surface-variant hover:border-primary-container transition-colors active:scale-95 ml-2">
+<img alt="User profile" class="w-full h-full object-cover" data-alt="A portrait of a confident woman with short dark hair, wearing minimal makeup and a dark top. Soft, even studio lighting against a plain dark grey background. Modern, clean corporate avatar style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBm65_ptwKJcGVVHWkFLnOK0jMmS9TDruZU_U4fcL5Cv9sdjE-TiplH4SRY6FiI45N1d3agaraCTGTdHL3W7BpIhHhOLrdm51uo9aPN7Ey5luH5P96s6bDPE3h9GPv3ya4teMvPi4dCAQqThRhOmtT0X71PCEZrvwu3ZT5FOVI-tGd2ydeksEkfda8aQFsZooxoBwiFZE8anPFIlsh-OmfaxwB-cZ7qbtZa8M5YoXU6Yk5lFpdeyCWWj73WIO5IS0ysZnAqw_m2zdE"/>
+</button>
+</div>
+</header>
+<!-- Chat History Canvas -->
+<div class="flex-grow overflow-y-auto p-6 flex flex-col gap-6 relative">
+<!-- Date Divider -->
+<div class="flex items-center justify-center my-4 relative">
+<div class="absolute left-0 right-0 h-[1px] bg-surface-variant"></div>
+<span class="relative bg-background px-4 font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Today, Oct 24</span>
+</div>
+<!-- Message Group: Marcus -->
+<div class="flex gap-4 group">
+<div class="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0 cursor-pointer">
+<img alt="Marcus Thorne" class="w-full h-full object-cover" data-alt="A portrait of a young man with a slight stubble, wearing a casual dark crew neck t-shirt. Studio lighting emphasizing sharp features against a dark, moody background. Professional and approachable tech worker aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAvDmYToF_86OIiDuyFJoN0lVehN7yoBFiONHzE_KKVZz3OeG-u9Bj0Vj2AciVmDG8X5lqnDn--BkvBVfeZL2WujLEipahMdHBISANGsAqa5cdgVOu3dHuzhtnKFsiH8kvyfdIrWJ-1PPSpDmSOvDGUwD3lYTW4wY6Sr9fr5jtlbtJbyVLWV63HIKngcJQkCmGDuTgeWNN6d2nBL4W9JjGxmoEUPJnD4E-o5lUsMqv8iS5bQsjEc89W6y1IyRxH8FmYQZkN2V97UmA"/>
+</div>
+<div class="flex flex-col flex-grow">
+<div class="flex items-baseline gap-2 mb-1">
+<span class="font-title-lg text-title-lg text-on-surface cursor-pointer hover:underline">Marcus Thorne</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">09:15 AM</span>
+</div>
+<div class="font-body-md text-body-md text-on-surface/90 space-y-2">
+<p>Hey team, I just pushed the final commits for the new Dark Mode component library. The PR is ready for review.</p>
+<p>I've ensured we're strictly using the semantic tokens from the JSON. Can someone take a look before the standup?</p>
+</div>
+<!-- Code Snippet Attachment -->
+<div class="mt-3 bg-surface-container rounded-lg border border-surface-variant p-4 font-mono text-sm overflow-x-auto relative">
+<div class="absolute top-2 right-2 flex gap-2">
+<span class="text-on-surface-variant text-xs">typescript</span>
+</div>
+<pre class="text-on-surface-variant"><code class="text-secondary-fixed">export const</code> <span class="text-tertiary">buttonStyles</span> = <span class="text-primary-container">`
+  bg-surface-container 
+  hover:border-primary-container 
+  text-primary-fixed
+`</span>;</pre>
+</div>
+<!-- Reactions -->
+<div class="flex gap-2 mt-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="bg-surface-container-low hover:bg-surface-container border border-surface-variant rounded-full px-2 py-1 flex items-center gap-1">
+<span class="text-sm">👀</span> <span class="font-label-sm text-label-sm text-on-surface-variant">2</span>
+</button>
+<button class="bg-surface-container-low hover:bg-surface-container border border-surface-variant rounded-full px-2 py-1 flex items-center gap-1 text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px]">add_reaction</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Message Group: Sarah -->
+<div class="flex gap-4 group">
+<div class="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0 cursor-pointer">
+<img alt="Sarah Jenkins" class="w-full h-full object-cover" data-alt="A professional headshot of a young woman with a warm smile, wearing a dark blazer over a light shirt. Soft, natural lighting against a neutral dark grey background. High resolution, clear focus, suitable for a modern corporate avatar." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD_XV6H0x87mN2eW8jg4CZInWqO5yeQsnxXQs3t5D7rA5EWF_qrWk-vDHOvfGpszkkPJDWTxidxarD4V2CObn08MqbhVAxzSteZ7t1OWnvjDhRuCbMi0KfmZ68bU_zgvMtnV2gqSrQhgeMI-YRE63YwIArPBmXHxUqVSuEWVvSLn_StuqFwWYhYWZCUYdxUuCfnAtnOQ_NPZYOm-L_UiBFjTRMRCLj-eARPIQyqJgV8g2HI6XvRLP8AApqn0FJt6UkIEJ_MW8FsbQ0"/>
+</div>
+<div class="flex flex-col flex-grow">
+<div class="flex items-baseline gap-2 mb-1">
+<span class="font-title-lg text-title-lg text-on-surface cursor-pointer hover:underline">Sarah Jenkins</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">09:42 AM</span>
+</div>
+<div class="font-body-md text-body-md text-on-surface/90 space-y-2">
+<p><span class="bg-primary-container/20 text-primary-fixed px-1 rounded font-medium">@Marcus Thorne</span> Awesome work. I pulled it locally and the contrast on the new primary buttons looks fantastic.</p>
+<p>I did notice one minor thing with the <code>SideNavBar</code> active state on mobile viewports. I left a comment on line 142 of the PR.</p>
+</div>
+<!-- File Attachment -->
+<div class="mt-3 flex items-center gap-3 bg-surface-container-low border border-surface-variant rounded-lg p-3 w-fit cursor-pointer hover:border-on-surface-variant transition-colors">
+<div class="w-10 h-10 rounded bg-secondary-container flex items-center justify-center text-on-secondary-container">
+<span class="material-symbols-outlined">image</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface">mobile_nav_bug.png</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">245 KB</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Spacing to ensure input doesn't cover last message -->
+<div class="h-10"></div>
+</div>
+<!-- Rich Text Input Area -->
+<div class="p-4 bg-background border-t border-surface-variant z-10 relative">
+<div class="bg-surface-container rounded-xl border border-surface-variant focus-within:border-primary-container focus-within:nav-glow transition-all flex flex-col shadow-sm">
+<!-- Rich Text Format Bar -->
+<div class="flex items-center gap-1 p-2 border-b border-surface-variant/50 bg-surface-container-low rounded-t-xl">
+<button class="p-1 rounded text-on-surface-variant hover:text-on-surface hover:bg-surface-variant transition-colors" title="Bold">
+<span class="material-symbols-outlined text-[18px]">format_bold</span>
+</button>
+<button class="p-1 rounded text-on-surface-variant hover:text-on-surface hover:bg-surface-variant transition-colors" title="Italic">
+<span class="material-symbols-outlined text-[18px]">format_italic</span>
+</button>
+<button class="p-1 rounded text-on-surface-variant hover:text-on-surface hover:bg-surface-variant transition-colors" title="Strikethrough">
+<span class="material-symbols-outlined text-[18px]">strikethrough_s</span>
+</button>
+<div class="w-[1px] h-4 bg-surface-variant mx-1"></div>
+<button class="p-1 rounded text-on-surface-variant hover:text-on-surface hover:bg-surface-variant transition-colors" title="Link">
+<span class="material-symbols-outlined text-[18px]">link</span>
+</button>
+<button class="p-1 rounded text-on-surface-variant hover:text-on-surface hover:bg-surface-variant transition-colors" title="List">
+<span class="material-symbols-outlined text-[18px]">format_list_bulleted</span>
+</button>
+<button class="p-1 rounded text-on-surface-variant hover:text-on-surface hover:bg-surface-variant transition-colors" title="Code snippet">
+<span class="material-symbols-outlined text-[18px]">code</span>
+</button>
+</div>
+<!-- Input Field -->
+<div class="flex items-end p-2 gap-2">
+<button class="p-2 rounded-full text-on-surface-variant hover:text-primary-fixed hover:bg-surface-variant transition-colors mb-1" title="Attach file">
+<span class="material-symbols-outlined">add_circle</span>
+</button>
+<textarea class="flex-grow bg-transparent border-none focus:ring-0 text-on-surface font-body-md text-body-md resize-none min-h-[44px] max-h-[200px] py-2 placeholder-on-surface-variant/60 no-scrollbar" oninput="this.style.height = ''; this.style.height = Math.min(this.scrollHeight, 200) + 'px'" placeholder="Message #development..." rows="1"></textarea>
+<div class="flex items-center gap-1 mb-1">
+<button class="p-2 rounded-full text-on-surface-variant hover:text-on-surface hover:bg-surface-variant transition-colors" title="Emoji">
+<span class="material-symbols-outlined">mood</span>
+</button>
+<button class="p-2 rounded-lg bg-primary-container hover:bg-[#FF7B25] text-white transition-colors flex items-center justify-center nav-glow">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">send</span>
+</button>
+</div>
+</div>
+</div>
+<div class="text-center mt-2">
+<span class="font-label-sm text-label-sm text-on-surface-variant/50"><strong>Shift + Enter</strong> to add a new line.</span>
+</div>
+</div>
+</main>
+</body></html>
