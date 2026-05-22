@@ -1,5 +1,70 @@
 const { Server, Channel, User } = require('../models');
 
+const toPublicUser = (user) => {
+  if (!user) return null;
+  const safe = typeof user.toJSON === 'function' ? user.toJSON() : user;
+  const id = safe._id || safe.id;
+  return {
+    id,
+    _id: id,
+    username: safe.username,
+    email: safe.email,
+    avatar: safe.avatar ?? null,
+    status: safe.status || 'offline',
+    customStatus: safe.customStatus || '',
+    aboutMe: safe.aboutMe || ''
+  };
+};
+
+const buildServerResponse = async (server) => {
+  if (!server) return null;
+
+  const channelObjects = [];
+  for (const channelId of server.channels || []) {
+    const channel = await Channel.findById(channelId);
+    if (channel) channelObjects.push(channel);
+  }
+  channelObjects.sort((a, b) => (a.position ?? 0) - (b.position ?? 0));
+
+  const ownerUser = await User.findById(server.owner);
+  const owner = toPublicUser(ownerUser);
+
+  const members = [];
+  for (const member of server.members || []) {
+    const memberId = typeof member.user === 'object'
+      ? (member.user._id || member.user.id)
+      : member.user;
+    const memberUser = memberId ? await User.findById(memberId) : null;
+    members.push({
+      ...member,
+      user: memberUser ? toPublicUser(memberUser) : {
+        id: memberId,
+        _id: memberId,
+        username: 'Unknown User',
+        email: '',
+        avatar: null,
+        status: 'offline',
+        customStatus: '',
+        aboutMe: ''
+      },
+      joinedAt: member.joinedAt || server.createdAt
+    });
+  }
+
+  return {
+    _id: server._id,
+    name: server.name,
+    description: server.description,
+    icon: server.icon,
+    owner,
+    members,
+    channels: channelObjects,
+    inviteCode: server.inviteCode,
+    createdAt: server.createdAt,
+    updatedAt: server.updatedAt
+  };
+};
+
 // @desc    Create a new server
 // @route   POST /api/servers
 // @access  Private
@@ -45,32 +110,8 @@ const createServer = async (req, res) => {
       console.error(`[createServer] ERROR: Could not find user ${req.user._id}`);
     }
 
-    // Return server with populated channels
     const populatedServer = await Server.findById(server._id);
-    
-    // Manually populate channels
-    const channelObjects = [];
-    for (const channelId of populatedServer.channels) {
-      const channel = await Channel.findById(channelId);
-      if (channel) channelObjects.push(channel);
-    }
-    
-    // Manually populate owner
-    const ownerUser = await User.findById(populatedServer.owner);
-    
-    const responseServer = {
-      ...populatedServer,
-      _id: populatedServer._id,
-      name: populatedServer.name,
-      description: populatedServer.description,
-      icon: populatedServer.icon,
-      owner: ownerUser ? { _id: ownerUser._id, username: ownerUser.username, avatar: ownerUser.avatar } : null,
-      members: populatedServer.members,
-      channels: channelObjects,
-      inviteCode: populatedServer.inviteCode,
-      createdAt: populatedServer.createdAt,
-      updatedAt: populatedServer.updatedAt
-    };
+    const responseServer = await buildServerResponse(populatedServer);
 
     res.status(201).json({
       success: true,
@@ -100,28 +141,8 @@ const getServers = async (req, res) => {
       for (const serverId of user.servers) {
         const server = await Server.findById(serverId);
         if (server) {
-          // Manually populate channels
-          const channelObjects = [];
-          for (const channelId of server.channels) {
-            const channel = await Channel.findById(channelId);
-            if (channel) channelObjects.push(channel);
-          }
-          
-          // Manually populate owner
-          const ownerUser = await User.findById(server.owner);
-          
-          servers.push({
-            _id: server._id,
-            name: server.name,
-            description: server.description,
-            icon: server.icon,
-            owner: ownerUser ? { _id: ownerUser._id, username: ownerUser.username, avatar: ownerUser.avatar } : null,
-            members: server.members,
-            channels: channelObjects,
-            inviteCode: server.inviteCode,
-            createdAt: server.createdAt,
-            updatedAt: server.updatedAt
-          });
+          const responseServer = await buildServerResponse(server);
+          if (responseServer) servers.push(responseServer);
         }
       }
     }
@@ -156,9 +177,12 @@ const getServer = async (req, res) => {
     }
 
     // Check if user is a member
-    const isMember = server.members.some(
-      m => m.user._id.toString() === req.user._id.toString()
-    );
+    const isMember = server.members.some((m) => {
+      const memberId = typeof m.user === 'object'
+        ? (m.user._id || m.user.id)
+        : m.user;
+      return memberId?.toString() === req.user._id.toString();
+    });
 
     if (!isMember) {
       return res.status(403).json({
@@ -167,9 +191,11 @@ const getServer = async (req, res) => {
       });
     }
 
+    const responseServer = await buildServerResponse(server);
+
     res.json({
       success: true,
-      server
+      server: responseServer
     });
   } catch (error) {
     console.error('Get server error:', error);
@@ -220,9 +246,11 @@ const updateServer = async (req, res) => {
     
     await server.save();
 
+    const responseServer = await buildServerResponse(server);
+
     res.json({
       success: true,
-      server: server
+      server: responseServer
     });
   } catch (error) {
     console.error('Update server error:', error);
@@ -319,28 +347,8 @@ const joinServer = async (req, res) => {
         user.servers.push(server._id);
         await user.save();
         
-        // Return the server data so user can access it
-        const channelObjects = [];
-        for (const channelId of server.channels) {
-          const channel = await Channel.findById(channelId);
-          if (channel) channelObjects.push(channel);
-        }
-        
-        const ownerUser = await User.findById(server.owner);
-        
-        const responseServer = {
-          _id: server._id,
-          name: server.name,
-          description: server.description,
-          icon: server.icon,
-          owner: ownerUser ? { _id: ownerUser._id, username: ownerUser.username, avatar: ownerUser.avatar } : null,
-          members: server.members,
-          channels: channelObjects,
-          inviteCode: server.inviteCode,
-          createdAt: server.createdAt,
-          updatedAt: server.updatedAt
-        };
-        
+        const responseServer = await buildServerResponse(server);
+
         return res.json({
           success: true,
           message: 'Server synced successfully',
@@ -371,29 +379,8 @@ const joinServer = async (req, res) => {
       console.log(`[joinServer] Added server ${server.name} to user ${req.user.username}'s servers list`);
     }
 
-    // Manually populate channels
     const populatedServer = await Server.findById(server._id);
-    const channelObjects = [];
-    for (const channelId of populatedServer.channels) {
-      const channel = await Channel.findById(channelId);
-      if (channel) channelObjects.push(channel);
-    }
-    
-    // Manually populate owner
-    const ownerUser = await User.findById(populatedServer.owner);
-    
-    const responseServer = {
-      _id: populatedServer._id,
-      name: populatedServer.name,
-      description: populatedServer.description,
-      icon: populatedServer.icon,
-      owner: ownerUser ? { _id: ownerUser._id, username: ownerUser.username, avatar: ownerUser.avatar } : null,
-      members: populatedServer.members,
-      channels: channelObjects,
-      inviteCode: populatedServer.inviteCode,
-      createdAt: populatedServer.createdAt,
-      updatedAt: populatedServer.updatedAt
-    };
+    const responseServer = await buildServerResponse(populatedServer);
 
     res.json({
       success: true,
@@ -562,10 +549,11 @@ const updateMemberRole = async (req, res) => {
     await server.save();
 
     const updatedServer = await Server.findById(serverId);
+    const responseServer = await buildServerResponse(updatedServer);
 
     res.json({
       success: true,
-      server: updatedServer
+      server: responseServer
     });
   } catch (error) {
     console.error('Update member role error:', error);

@@ -85,7 +85,8 @@ const getChannels = async (req, res) => {
       });
     }
 
-    const channels = await Channel.find({ server: serverId }).sort('position');
+    const channels = await Channel.find({ server: serverId });
+    channels.sort((a, b) => (a.position ?? 0) - (b.position ?? 0));
 
     res.json({
       success: true,
@@ -112,6 +113,25 @@ const getChannel = async (req, res) => {
       return res.status(404).json({
         success: false,
         message: 'Channel not found'
+      });
+    }
+
+    const server = await Server.findById(channel.server);
+    if (!server) {
+      return res.status(404).json({
+        success: false,
+        message: 'Server not found'
+      });
+    }
+
+    const isMember = server.members.some(
+      m => m.user.toString() === req.user._id.toString()
+    );
+
+    if (!isMember) {
+      return res.status(403).json({
+        success: false,
+        message: 'You are not a member of this server'
       });
     }
 
@@ -159,20 +179,15 @@ const updateChannel = async (req, res) => {
       });
     }
 
-    const updateData = {};
-    if (name) updateData.name = name.toLowerCase().replace(/\s+/g, '-');
-    if (description !== undefined) updateData.description = description;
-    if (permissions) updateData.permissions = permissions;
+    if (name) channel.name = name.toLowerCase().replace(/\s+/g, '-');
+    if (description !== undefined) channel.description = description;
+    if (permissions) channel.permissions = permissions;
 
-    const updatedChannel = await Channel.findByIdAndUpdate(
-      req.params.id,
-      updateData,
-      { new: true, runValidators: true }
-    );
+    await channel.save();
 
     res.json({
       success: true,
-      channel: updatedChannel
+      channel
     });
   } catch (error) {
     console.error('Update channel error:', error);

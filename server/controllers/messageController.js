@@ -7,6 +7,7 @@ const getMessages = async (req, res) => {
   try {
     const { channelId } = req.params;
     const { limit = 50, before } = req.query;
+    const limitNum = Math.min(Math.max(parseInt(limit, 10) || 50, 1), 100);
 
     const channel = await Channel.findById(channelId);
 
@@ -18,6 +19,12 @@ const getMessages = async (req, res) => {
     }
 
     const server = await Server.findById(channel.server);
+    if (!server) {
+      return res.status(404).json({
+        success: false,
+        message: 'Server not found'
+      });
+    }
 
     // Check if user is a member
     const isMember = server.members.some(
@@ -34,7 +41,7 @@ const getMessages = async (req, res) => {
     // Get messages for the channel (not deleted)
     let messages = await Message.find({ channel: channelId, deleted: false })
       .sort({ createdAt: -1 })
-      .limit(parseInt(limit));
+      .limit(limitNum);
 
     // Filter by 'before' if provided
     if (before) {
@@ -88,11 +95,19 @@ const createMessage = async (req, res) => {
   try {
     const { channelId } = req.params;
     const { content } = req.body;
+    const rawContent = typeof content === 'string' ? content.trim() : '';
 
-    if (!content || !content.trim()) {
+    if (!rawContent) {
       return res.status(400).json({
         success: false,
         message: 'Message content is required'
+      });
+    }
+
+    if (rawContent.length > 2000) {
+      return res.status(400).json({
+        success: false,
+        message: 'Message cannot exceed 2000 characters'
       });
     }
 
@@ -106,6 +121,12 @@ const createMessage = async (req, res) => {
     }
 
     const server = await Server.findById(channel.server);
+    if (!server) {
+      return res.status(404).json({
+        success: false,
+        message: 'Server not found'
+      });
+    }
 
     // Check if user is a member
     const member = server.members.find(
@@ -128,7 +149,7 @@ const createMessage = async (req, res) => {
     }
 
     const message = new Message({
-      content: content.trim(),
+      content: rawContent,
       author: req.user._id,
       channel: channelId,
       server: channel.server
@@ -169,6 +190,12 @@ const deleteMessage = async (req, res) => {
     if (message.author.toString() !== req.user._id.toString()) {
       // Check if user is server admin/owner
       const server = await Server.findById(message.server);
+      if (!server) {
+        return res.status(404).json({
+          success: false,
+          message: 'Server not found'
+        });
+      }
       const member = server.members.find(
         m => m.user.toString() === req.user._id.toString()
       );
@@ -205,6 +232,7 @@ const deleteMessage = async (req, res) => {
 const editMessage = async (req, res) => {
   try {
     const { content } = req.body;
+    const rawContent = typeof content === 'string' ? content.trim() : '';
     const message = await Message.findById(req.params.id);
 
     if (!message) {
@@ -222,7 +250,20 @@ const editMessage = async (req, res) => {
       });
     }
 
-    message.content = content.trim();
+    if (!rawContent) {
+      return res.status(400).json({
+        success: false,
+        message: 'Message content is required'
+      });
+    }
+    if (rawContent.length > 2000) {
+      return res.status(400).json({
+        success: false,
+        message: 'Message cannot exceed 2000 characters'
+      });
+    }
+
+    message.content = rawContent;
     message.edited = true;
     message.editedAt = new Date();
     await message.save();

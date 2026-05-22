@@ -4,6 +4,8 @@ const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
 const cors = require('cors');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
 const path = require('path');
 
 const { authRoutes, serverRoutes, channelRoutes, messageRoutes, pushRoutes } = require('./routes');
@@ -12,23 +14,32 @@ const { initializeSocket } = require('./socket');
 const app = express();
 const server = http.createServer(app);
 
+app.disable('x-powered-by');
+app.set('trust proxy', 1);
+
+const missingEnv = ['JWT_SECRET'].filter((key) => !process.env[key]);
+if (missingEnv.length) {
+  console.error(`Missing required env vars: ${missingEnv.join(', ')}`);
+  if (process.env.NODE_ENV === 'production') {
+    process.exit(1);
+  }
+}
+
 // Allowed origins for CORS
 const allowedOrigins = [
   'http://localhost:5173',
   'http://localhost:5174',
   'http://localhost:5175',
   'http://localhost:5176',
-  'http://172.17.73.56:5173',
-  'http://172.17.73.56:5174',
-  'http://172.17.73.56:5175',
-  'http://172.17.73.56:5176',
   process.env.CLIENT_URL
 ].filter(Boolean);
 
-// Allow any *.vercel.app origin dynamically
+const allowVercelPreviews = process.env.ALLOW_VERCEL_PREVIEWS === 'true';
+
+// Allow any *.vercel.app origin dynamically (opt-in)
 const corsOriginFn = (origin, callback) => {
   if (!origin) return callback(null, true); // allow non-browser requests
-  if (allowedOrigins.includes(origin) || /\.vercel\.app$/.test(origin)) {
+  if (allowedOrigins.includes(origin) || (allowVercelPreviews && /\.vercel\.app$/.test(origin))) {
     return callback(null, true);
   }
   callback(new Error(`CORS: origin ${origin} not allowed`));
@@ -44,17 +55,38 @@ const io = new Server(server, {
 });
 
 // Middleware
+app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
 app.use(cors({
   origin: corsOriginFn,
   credentials: true
 }));
-app.use(express.json({ limit: '50mb' }));
-app.use(express.urlencoded({ extended: true, limit: '50mb' }));
+app.use(express.json({ limit: '5mb' }));
+app.use(express.urlencoded({ extended: true, limit: '5mb' }));
+
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 300,
+  standardHeaders: true,
+  legacyHeaders: false
+});
+
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 20,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: {
+    success: false,
+    message: 'Too many auth attempts. Please try again later.'
+  }
+});
 
 // Static files for uploads
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // API Routes
+app.use('/api/auth', authLimiter);
+app.use('/api', apiLimiter);
 app.use('/api/auth', authRoutes);
 app.use('/api/servers', serverRoutes);
 app.use('/api/channels', channelRoutes);
@@ -91,12 +123,14 @@ initializeSocket(io);
 const PORT = process.env.PORT || 5000;
 const HOST = process.env.HOST || '0.0.0.0';
 
-console.log('💾 Using local file storage - data persists on your PC');
-console.log('📁 Data location: server/storage/data/');
+const DATA_LOCATION = path.join(__dirname, 'storage', 'data');
+console.log(`💾 Using local file storage - data persists on disk: ${DATA_LOCATION}`);
 server.listen(PORT, HOST, () => {
   console.log(`🚀 Server running on ${HOST}:${PORT}`);
   console.log(`🔌 WebSocket server ready`);
-  console.log(`📱 Access from other devices: http://172.17.73.56:${PORT}`);
+  if (process.env.NODE_ENV !== 'production') {
+    console.log(`📱 Access from other devices: http://<your-local-ip>:${PORT}`);
+  }
 });
 
 // Graceful shutdown

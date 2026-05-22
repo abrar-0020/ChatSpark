@@ -6,11 +6,34 @@ const { generateToken } = require('../middleware/auth');
 // @access  Public
 const register = async (req, res) => {
   try {
-    const { username, email, password } = req.body;
+    const rawUsername = typeof req.body?.username === 'string' ? req.body.username.trim() : '';
+    const rawEmail = typeof req.body?.email === 'string' ? req.body.email.trim().toLowerCase() : '';
+    const rawPassword = typeof req.body?.password === 'string' ? req.body.password : '';
+
+    if (!rawUsername || rawUsername.length < 3 || rawUsername.length > 32) {
+      return res.status(400).json({
+        success: false,
+        message: 'Username must be 3-32 characters'
+      });
+    }
+
+    if (!rawEmail || !/^\S+@\S+\.\S+$/.test(rawEmail)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Please provide a valid email'
+      });
+    }
+
+    if (!rawPassword || rawPassword.length < 6 || rawPassword.length > 128) {
+      return res.status(400).json({
+        success: false,
+        message: 'Password must be 6-128 characters'
+      });
+    }
 
     // Check if user already exists (check both email and username separately)
-    const existingEmail = await User.findOne({ email: email.toLowerCase() });
-    const existingUsername = await User.findOne({ username });
+    const existingEmail = await User.findOne({ email: rawEmail });
+    const existingUsername = await User.findOne({ username: rawUsername });
 
     if (existingEmail) {
       return res.status(400).json({
@@ -28,9 +51,9 @@ const register = async (req, res) => {
 
     // Create user (use new User() and save() instead of User.create())
     const user = new User({
-      username,
-      email,
-      password
+      username: rawUsername,
+      email: rawEmail,
+      password: rawPassword
     });
     await user.save();
 
@@ -65,10 +88,11 @@ const register = async (req, res) => {
 // @access  Public
 const login = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const rawEmail = typeof req.body?.email === 'string' ? req.body.email.trim().toLowerCase() : '';
+    const rawPassword = typeof req.body?.password === 'string' ? req.body.password : '';
 
     // Validate input
-    if (!email || !password) {
+    if (!rawEmail || !rawPassword) {
       return res.status(400).json({
         success: false,
         message: 'Please provide email and password'
@@ -76,7 +100,7 @@ const login = async (req, res) => {
     }
 
     // Check for user
-    const user = await User.findOne({ email: email.toLowerCase() });
+    const user = await User.findOne({ email: rawEmail });
 
     if (!user) {
       return res.status(401).json({
@@ -86,7 +110,7 @@ const login = async (req, res) => {
     }
 
     // Check password
-    const isMatch = await user.comparePassword(password);
+    const isMatch = await user.comparePassword(rawPassword);
 
     if (!isMatch) {
       return res.status(401).json({
@@ -116,7 +140,7 @@ const login = async (req, res) => {
       }
     };
 
-    console.log('[Login] Success for user:', user.username, 'Token:', token.substring(0, 20) + '...');
+    console.log('[Login] Success for user:', user.username);
     res.json(responseData);
   } catch (error) {
     console.error('Login error:', error);
@@ -165,6 +189,31 @@ const getMe = async (req, res) => {
 const updateProfile = async (req, res) => {
   try {
     const { username, avatar, customStatus, aboutMe } = req.body;
+
+    if (username && (username.length < 3 || username.length > 32)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Username must be 3-32 characters'
+      });
+    }
+    if (customStatus && customStatus.length > 128) {
+      return res.status(400).json({
+        success: false,
+        message: 'Custom status must be 128 characters or less'
+      });
+    }
+    if (aboutMe && aboutMe.length > 1024) {
+      return res.status(400).json({
+        success: false,
+        message: 'About Me must be 1024 characters or less'
+      });
+    }
+    if (avatar && avatar.length > 20000) {
+      return res.status(400).json({
+        success: false,
+        message: 'Avatar data is too large'
+      });
+    }
 
     const updateData = {};
     if (username) updateData.username = username;

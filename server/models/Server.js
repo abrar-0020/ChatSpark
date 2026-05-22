@@ -1,3 +1,4 @@
+const crypto = require('crypto');
 const FileStorage = require('../storage/fileStorage');
 
 // File-based storage (persists on local disk)
@@ -11,7 +12,7 @@ let serverIdCounter = servers.length > 0
 
 // Helper to generate invite code
 function generateInviteCode() {
-  return Math.random().toString(36).substring(2, 8).toUpperCase();
+  return crypto.randomBytes(4).toString('hex').toUpperCase();
 }
 
 class Server {

@@ -19,6 +19,12 @@ const userSockets = new Map();
 // Store typing users: Map<channelId, Set<userId>>
 const typingUsers = new Map();
 
+const getServerId = (serverRef) => {
+  if (!serverRef) return null;
+  if (typeof serverRef === 'string') return serverRef;
+  return serverRef._id || serverRef.id || null;
+};
+
 const initializeSocket = (io) => {
   // Middleware to authenticate socket connections
   io.use(async (socket, next) => {
@@ -69,13 +75,17 @@ const initializeSocket = (io) => {
 
     // Join user's server rooms
     const userWithServers = await User.findById(user._id);
-    userWithServers.servers.forEach(server => {
-      socket.join(`server:${server._id}`);
+    const serverRefs = Array.isArray(userWithServers?.servers) ? userWithServers.servers : [];
+    serverRefs.forEach((serverRef) => {
+      const serverId = getServerId(serverRef);
+      if (serverId) socket.join(`server:${serverId}`);
     });
 
     // Broadcast user online status to all servers
-    userWithServers.servers.forEach(server => {
-      socket.to(`server:${server._id}`).emit('user:online', {
+    serverRefs.forEach((serverRef) => {
+      const serverId = getServerId(serverRef);
+      if (!serverId) return;
+      socket.to(`server:${serverId}`).emit('user:online', {
         userId: user._id,
         username: user.username,
         status: 'online'
@@ -287,8 +297,11 @@ const initializeSocket = (io) => {
 
       // Broadcast to all servers
       const userWithServers = await User.findById(user._id);
-      userWithServers.servers.forEach(server => {
-        io.to(`server:${server._id}`).emit('user:status', {
+      const statusServerRefs = Array.isArray(userWithServers?.servers) ? userWithServers.servers : [];
+      statusServerRefs.forEach((serverRef) => {
+        const serverId = getServerId(serverRef);
+        if (!serverId) return;
+        io.to(`server:${serverId}`).emit('user:status', {
           userId: user._id,
           status
         });
@@ -347,14 +360,15 @@ const initializeSocket = (io) => {
 
           // Broadcast offline status
           const userWithServers = await User.findById(user._id);
-          if (userWithServers) {
-            userWithServers.servers.forEach(server => {
-              io.to(`server:${server._id}`).emit('user:offline', {
-                userId: user._id,
-                username: user.username
-              });
+          const offlineServerRefs = Array.isArray(userWithServers?.servers) ? userWithServers.servers : [];
+          offlineServerRefs.forEach((serverRef) => {
+            const serverId = getServerId(serverRef);
+            if (!serverId) return;
+            io.to(`server:${serverId}`).emit('user:offline', {
+              userId: user._id,
+              username: user.username
             });
-          }
+          });
         }
       }
 
