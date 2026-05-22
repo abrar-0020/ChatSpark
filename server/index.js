@@ -93,6 +93,11 @@ app.use('/api/channels', channelRoutes);
 app.use('/api/messages', messageRoutes);
 app.use('/api/push', pushRoutes);
 
+// Root route
+app.get('/', (req, res) => {
+  res.send('ChatSpark API is running! Access /api/health for status.');
+});
+
 // Health check
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
