@@ -1,6 +1,24 @@
 import { io, Socket } from 'socket.io-client';
 
-const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || 'http://localhost:5000';
+const LOCAL_SOCKET_URL = 'http://localhost:5000';
+const PROD_SOCKET_URL = 'https://chatspark.onrender.com';
+
+const resolveSocketUrl = () => {
+  const configuredUrl = import.meta.env.VITE_SOCKET_URL as string | undefined;
+  const isLocalHost = typeof window !== 'undefined' && /^(localhost|127\.0\.0\.1)$/.test(window.location.hostname);
+
+  if (import.meta.env.DEV || isLocalHost) {
+    return configuredUrl || LOCAL_SOCKET_URL;
+  }
+
+  if (configuredUrl && !/localhost|127\.0\.0\.1/.test(configuredUrl)) {
+    return configuredUrl;
+  }
+
+  return PROD_SOCKET_URL;
+};
+
+const SOCKET_URL = resolveSocketUrl();
 
 class SocketService {
   private socket: Socket | null = null;

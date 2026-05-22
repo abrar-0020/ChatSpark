@@ -97,9 +97,12 @@ const ChatArea = () => {
 
   if (!activeChannel || !activeServer) {
     return (
-      <div className={`${panel === 'channels' ? 'hidden md:flex' : 'flex'} flex-1 bg-neutral-800 items-center justify-center`}>
-        <div className="text-center">
-          <div className="text-6xl mb-4">💬</div>
+      <div className={`${panel === 'channels' ? 'hidden md:flex' : 'flex'} flex-1 bg-neutral-950 items-center justify-center relative overflow-hidden`}>
+        <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_top,rgba(255,107,53,0.08),transparent_35%),radial-gradient(circle_at_bottom,rgba(255,184,77,0.05),transparent_30%)]" />
+        <div className="text-center max-w-md px-6 relative z-10">
+          <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-neutral-800 border border-neutral-700 flex items-center justify-center shadow-glow">
+            <Hash size={28} className="text-primary" />
+          </div>
           <h2 className="text-2xl font-bold text-white mb-2">No Channel Selected</h2>
           <p className="text-neutral-400">Select a channel to start chatting</p>
         </div>
@@ -112,30 +115,30 @@ const ChatArea = () => {
   return (
     <div className={`${panel === 'channels' ? 'hidden md:flex' : 'flex'} flex-1`}>
       {/* Main Chat Area */}
-      <div className="flex-1 bg-neutral-800 flex flex-col relative">
+      <div className="flex-1 bg-neutral-900 flex flex-col relative overflow-hidden">
         {/* Channel Header */}
-        <div className="h-14 px-4 flex items-center justify-between border-b border-neutral-900 shadow-sm flex-shrink-0">
-          <div className="flex items-center gap-2">
+        <div className="h-16 px-4 md:px-6 flex items-center justify-between border-b border-neutral-800 bg-neutral-950/70 backdrop-blur-sm shadow-sm flex-shrink-0">
+          <div className="flex items-center gap-3 min-w-0">
             <button
               onClick={() => setPanel('channels')}
               className="md:hidden text-neutral-400 hover:text-white transition-colors mr-1"
             >
               <ArrowLeft size={20} />
             </button>
-            <Hash size={20} className="text-neutral-400 flex-shrink-0" />
-            <div>
-              <p className="font-semibold text-white leading-tight">{activeChannel.name}</p>
+            <div className="w-9 h-9 rounded-xl bg-neutral-800 flex items-center justify-center border border-neutral-700 flex-shrink-0">
+              <Hash size={18} className="text-neutral-300" />
+            </div>
+            <div className="min-w-0">
+              <p className="font-semibold text-white leading-tight truncate">{activeChannel.name}</p>
               <p className="text-xs text-neutral-400 md:hidden flex items-center gap-1">
                 <span className="w-1.5 h-1.5 rounded-full bg-green-400 inline-block" />
                 {onlineCount} Online
               </p>
             </div>
             {activeChannel.description && (
-              <div className="hidden md:flex items-center">
-                <div className="w-px h-6 bg-neutral-700 mx-2" />
-                <span className="text-sm text-neutral-400 truncate max-w-xs">
-                  {activeChannel.description}
-                </span>
+              <div className="hidden md:flex items-center min-w-0">
+                <div className="w-px h-6 bg-neutral-700 mx-3" />
+                <span className="text-sm text-neutral-400 truncate max-w-md">{activeChannel.description}</span>
               </div>
             )}
           </div>
@@ -220,7 +223,7 @@ const ChatArea = () => {
 
         {/* Dropdown Panels */}
         {(showPinned || showInbox || showHelp || isSearching) && (
-          <div className="absolute top-12 right-4 z-50 w-96 max-h-[70vh] bg-neutral-900 rounded-lg shadow-2xl border border-neutral-850 overflow-hidden">
+          <div className="absolute top-14 right-4 z-50 w-96 max-h-[70vh] bg-neutral-900 rounded-lg shadow-2xl border border-neutral-800 overflow-hidden">
             {/* Pinned Messages Panel */}
             {showPinned && (
               <div>

@@ -1,6 +1,24 @@
 import axios from 'axios';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+const LOCAL_API_URL = 'http://localhost:5000/api';
+const PROD_API_URL = 'https://chatspark.onrender.com/api';
+
+const resolveApiUrl = () => {
+  const configuredUrl = import.meta.env.VITE_API_URL as string | undefined;
+  const isLocalHost = typeof window !== 'undefined' && /^(localhost|127\.0\.0\.1)$/.test(window.location.hostname);
+
+  if (import.meta.env.DEV || isLocalHost) {
+    return configuredUrl || LOCAL_API_URL;
+  }
+
+  if (configuredUrl && !/localhost|127\.0\.0\.1/.test(configuredUrl)) {
+    return configuredUrl;
+  }
+
+  return PROD_API_URL;
+};
+
+const API_URL = resolveApiUrl();
 
 const api = axios.create({
   baseURL: API_URL,

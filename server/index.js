@@ -34,12 +34,10 @@ const allowedOrigins = [
   process.env.CLIENT_URL
 ].filter(Boolean);
 
-const allowVercelPreviews = process.env.ALLOW_VERCEL_PREVIEWS === 'true';
-
-// Allow any *.vercel.app origin dynamically (opt-in)
+// Allow any *.vercel.app origin so production frontend builds can talk to Render without extra env wiring
 const corsOriginFn = (origin, callback) => {
   if (!origin) return callback(null, true); // allow non-browser requests
-  if (allowedOrigins.includes(origin) || (allowVercelPreviews && /\.vercel\.app$/.test(origin))) {
+  if (allowedOrigins.includes(origin) || /\.vercel\.app$/.test(origin)) {
     return callback(null, true);
   }
   callback(new Error(`CORS: origin ${origin} not allowed`));
