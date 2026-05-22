@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { X, Camera, Save, User as UserIcon } from 'lucide-react';
+import { X, Camera, Save, User as UserIcon, LogOut } from 'lucide-react';
 import { useAuthStore } from '../../store';
 
 interface ProfileModalProps {
@@ -7,7 +7,7 @@ interface ProfileModalProps {
 }
 
 const ProfileModal = ({ onClose }: ProfileModalProps) => {
-  const { user, updateProfile } = useAuthStore();
+  const { user, updateProfile, logout } = useAuthStore();
   const [username, setUsername] = useState(user?.username || '');
   const [aboutMe, setAboutMe] = useState(user?.aboutMe || '');
   const [avatar, setAvatar] = useState(user?.avatar || '');
@@ -67,6 +67,11 @@ const ProfileModal = ({ onClose }: ProfileModalProps) => {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleLogout = async () => {
+    await logout();
+    onClose();
   };
 
   return (
@@ -240,6 +245,13 @@ const ProfileModal = ({ onClose }: ProfileModalProps) => {
         </div>
 
         <div className="flex justify-end gap-3 p-4 border-t border-neutral-800 bg-neutral-900/80 sticky bottom-0">
+          <button
+            onClick={handleLogout}
+            className="mr-auto flex items-center gap-2 px-4 py-2 rounded-lg border border-danger/40 text-danger hover:bg-danger/10 transition-colors"
+          >
+            <LogOut size={18} />
+            Log Out
+          </button>
           <button
             onClick={onClose}
             className="px-4 py-2 text-white hover:underline transition-colors"

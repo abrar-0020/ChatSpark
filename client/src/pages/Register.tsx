@@ -50,101 +50,88 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-[100dvh] flex items-center justify-center bg-gradient-to-br from-neutral-950 via-neutral-900 to-neutral-950 p-4">
-      <div className="w-full max-w-md">
-        <div className="bg-neutral-850 rounded-2xl shadow-hard p-8 border border-neutral-800">
-          {/* ChatSpark Logo */}
-          <div className="flex justify-center mb-6">
-            <div className="w-20 h-20 bg-gradient-to-br from-primary to-accent rounded-2xl flex items-center justify-center shadow-medium">
-              <svg width="44" height="44" viewBox="0 0 24 24" fill="none" className="text-white">
-                <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
-                <path d="M2 17L12 22L22 17" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                <path d="M2 12L12 17L22 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    <div className="bg-neutral-950 text-on-surface antialiased min-h-screen flex items-center justify-center p-4 md:p-8 overflow-hidden relative">
+      <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] pointer-events-none z-0" style={{ background: 'radial-gradient(circle, rgba(255, 107, 53, 0.05) 0%, rgba(9, 19, 36, 0) 70%)' }}></div>
+
+      <main className="w-full max-w-[440px] relative z-10">
+        <div className="bg-neutral-900 rounded-xl border border-neutral-800 p-8 md:p-10 relative overflow-hidden shadow-hard">
+          <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-primary to-transparent opacity-50"></div>
+
+          <div className="text-center mb-8 flex flex-col items-center">
+            <div className="w-12 h-12 bg-neutral-800 rounded-xl flex items-center justify-center border border-neutral-700 mb-4 relative group cursor-default">
+              <div className="absolute inset-0 bg-primary rounded-xl blur-md opacity-20 group-hover:opacity-40 transition-opacity duration-500"></div>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className="text-primary relative z-10 w-7 h-7">
+                <path d="M13 10V3L4 14H11V21L20 10H13Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
             </div>
-          </div>
-          <div className="text-center mb-8">
-            <h1 className="text-2xl font-bold text-white mb-2">Create an Account</h1>
+            <h1 className="font-bold text-3xl text-white mb-2 tracking-tight">Create an Account</h1>
             <p className="text-neutral-400">Join your college community</p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label className="block text-xs font-semibold text-neutral-300 uppercase tracking-wide mb-2">
-                Email
-                <span className="text-danger ml-1">*</span>
-              </label>
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <div className="space-y-2">
+              <label className="text-sm font-semibold text-neutral-300 block" htmlFor="email">Email Address</label>
               <input
+                id="email"
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="w-full px-4 py-3 bg-neutral-900 text-white rounded-lg 
-                         border border-neutral-700 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
+                className="w-full bg-neutral-950 border border-neutral-800 text-white rounded-lg px-4 py-3 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all duration-200 placeholder-neutral-500 shadow-sm"
                 autoComplete="email"
-                placeholder="your.email@college.edu"
+                placeholder="name@company.com"
               />
             </div>
 
-            <div>
-              <label className="block text-xs font-semibold text-neutral-300 uppercase tracking-wide mb-2">
-                Username
-                <span className="text-danger ml-1">*</span>
-              </label>
+            <div className="space-y-2">
+              <label className="text-sm font-semibold text-neutral-300 block" htmlFor="username">Username</label>
               <input
+                id="username"
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 required
                 minLength={3}
                 maxLength={32}
-                className="w-full px-4 py-3 bg-neutral-900 text-white rounded-lg 
-                         border border-neutral-700 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
+                className="w-full bg-neutral-950 border border-neutral-800 text-white rounded-lg px-4 py-3 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all duration-200 placeholder-neutral-500 shadow-sm"
                 autoComplete="username"
                 placeholder="Choose a username"
               />
             </div>
 
-            <div>
-              <label className="block text-xs font-semibold text-neutral-300 uppercase tracking-wide mb-2">
-                Password
-                <span className="text-danger ml-1">*</span>
-              </label>
+            <div className="space-y-2">
+              <label className="text-sm font-semibold text-neutral-300 block" htmlFor="password">Password</label>
               <div className="relative">
                 <input
+                  id="password"
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
                   minLength={6}
-                  className="w-full px-4 py-3 bg-neutral-900 text-white rounded-lg 
-                           border border-neutral-700 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all pr-12"
+                  className="w-full bg-neutral-950 border border-neutral-800 text-white rounded-lg px-4 py-3 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all duration-200 placeholder-neutral-500 shadow-sm pr-12"
                   autoComplete="new-password"
                   placeholder="Minimum 6 characters"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-neutral-400 
-                           hover:text-white transition-colors"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-white transition-colors"
                 >
                   {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
               </div>
             </div>
 
-            <div>
-              <label className="block text-xs font-semibold text-neutral-300 uppercase tracking-wide mb-2">
-                Confirm Password
-                <span className="text-danger ml-1">*</span>
-              </label>
+            <div className="space-y-2">
+              <label className="text-sm font-semibold text-neutral-300 block" htmlFor="confirmPassword">Confirm Password</label>
               <input
+                id="confirmPassword"
                 type={showPassword ? 'text' : 'password'}
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 required
-                className="w-full px-4 py-3 bg-neutral-900 text-white rounded-lg 
-                         border border-neutral-700 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
+                className="w-full bg-neutral-950 border border-neutral-800 text-white rounded-lg px-4 py-3 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all duration-200 placeholder-neutral-500 shadow-sm"
                 autoComplete="new-password"
                 placeholder="Re-enter your password"
               />
@@ -159,10 +146,7 @@ const Register = () => {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full py-3 bg-gradient-to-r from-primary to-accent hover:from-primary-hover hover:to-accent-hover
-                       text-white font-semibold rounded-lg transition-all shadow-sm hover:shadow-md
-                       disabled:opacity-50 disabled:cursor-not-allowed
-                       flex items-center justify-center gap-2"
+              className="w-full bg-primary hover:bg-primary-hover text-white font-semibold rounded-lg transition-all shadow-glow hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 py-3.5"
             >
               {isLoading ? (
                 <>
@@ -182,7 +166,7 @@ const Register = () => {
             </Link>
           </p>
         </div>
-      </div>
+      </main>
     </div>
   );
 };
